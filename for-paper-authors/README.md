@@ -1,10 +1,10 @@
-# SC25 Guidelines for Paper Authors
+# SC26 Guidelines for Paper Authors
 
 Clone this repository. Use the style and template in this directory. See the attached PDF as example.
 
 ### Procedure
 
-For each paper, it is mandatory to submit an AD (artifact description) appendix (see deadlines on SC25 web site).
+For each paper, it is mandatory to submit an AD (artifact description) appendix (see deadlines on SC26 web site).
 For this, remove the 2nd part (AE) of the template and fill out the required information matching your paper as short and precise as possible.
 If you cannot provide such information, add a justification instead.
 
@@ -73,7 +73,7 @@ and how to execute them by example on a designated computational platform (AE).
 
 ## How to deal with proprietary code or other legal constraints?
 
-After submitting a paper to SC25 via [https://submissions.supercomputing.org/](https://submissions.supercomputing.org/), author have the option to upload an AD Appendix.
+After submitting a paper to SC26 via [https://submissions.supercomputing.org/](https://submissions.supercomputing.org/), author have the option to upload an AD Appendix.
 
 
 In certain cases, authors might be unable to share the full computational artifact accompanying a paper. Under these circumstances, they have two alternatives.
