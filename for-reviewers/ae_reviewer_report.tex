@@ -9,11 +9,18 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{ae_review}
+\usepackage{ifthen}
+
+\newboolean{showauthor}
+% Set to false to omit the author block from the title page.
+\setboolean{showauthor}{false}
+%\setboolean{showauthor}{true}
 
 \begin{document}
 
 \title{Artifact Evaluation Report}
 
+\ifthenelse{\boolean{showauthor}}{%
 \author{\IEEEauthorblockN{Given Name Surname}
 \IEEEauthorblockA{\textit{dept. name of organization} \\
 \textit{name of organization}\\
@@ -25,6 +32,8 @@ email address or ORCID}
 \textit{name of organization}\\
 City, Country \\
 email address or ORCID}
+}
+}{% no author block
 }
 
 \maketitle
