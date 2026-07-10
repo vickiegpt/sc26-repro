@@ -1,0 +1,422 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tagging}
+\usepackage{url}
+\usepackage{sc26repro}
+
+% Replace every occurrence of TODO before submission.  The SC26 instructions
+% require all final text to be black and the explanation/example tags disabled.
+\newcommand{\oceantodo}[1]{\textbf{TODO: #1}}
+
+\begin{document}
+
+\twocolumn[%
+{\begin{center}
+\Huge
+Appendix: Artifact Description/Artifact Evaluation
+\end{center}}
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  AD Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendixAD
+
+\section{Overview of Contributions and Artifacts}
+
+\subsection{Paper's Main Contributions}
+
+\begin{description}
+\item[$C_1$] OCEAN is a software emulation framework for CXL~3.0 that
+implements GFAM, MH-SLD for as many as 16 hosts, Dynamic Capacity Devices,
+fabric management, active latency injection, token-bucket bandwidth control,
+and MESI-based software cache coherence with distributed snoop filters.
+
+\item[$C_2$] OCEAN provides a scalable multi-host fabric architecture with
+configurable CXL switches, topology discovery and address allocation, dynamic
+capacity management, and SHM, TCP, and RDMA transports.
+
+\item[$C_3$] OCEAN exposes emulated CXL memory through the Linux CXL, NUMA,
+and DAX interfaces, allowing existing applications and system software to run
+without source changes.
+
+\item[$C_4$] OCEAN is evaluated against real CXL Type-3 hardware using
+LMbench, STREAM, and OSU microbenchmarks.  It is then used to study hardware
+cache-coherence coverage with Tigon/TPC-C and YCSB, twelve memory-placement
+policies with GROMACS, and calibration of the inter-host LogP timing model.
+\end{description}
+
+\subsection{Computational Artifacts}
+
+\begin{description}
+\item[$A_1$] OCEAN source code, modified QEMU and workload submodules,
+guest image and kernel, experiment scripts, and plotting scripts.  Development
+repository: \url{https://github.com/cxl-emu/OCEAN}.
+Archived artifact: \oceantodo{insert the Zenodo DOI and immutable version or
+commit hash used for evaluation}.
+\end{description}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.12\columnwidth}p{0.24\columnwidth}p{0.50\columnwidth}}
+\toprule
+Artifact & Contributions & Reproducible paper elements \\
+\midrule
+$A_1$ & $C_1$--$C_4$ & Functional CXL device and multi-host deployment;
+Figs.~3--5 (fidelity); Figs.~6--7 (coherence); Fig.~8 (placement policies);
+Fig.~9 and Table~II (LogP calibration) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Artifact Identification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newartifact
+
+\artrel
+
+Artifact $A_1$ contains OCEAN's C/C++ implementation, the modified QEMU
+device model, host and network setup scripts, workload integrations, and
+analysis scripts.  The core implementation supports $C_1$--$C_3$; the
+microbenchmark, application, and calibration workflows support $C_4$.  The
+artifact also contains representative logs and plots under
+\texttt{artifact/}.
+
+\artexp
+
+After deployment, each guest should enumerate a CXL Type-3 device and expose a
+DAX device such as \texttt{/dev/dax0.0}.  Two or more guests should attach to
+the same OCEAN memory server and access the shared memory pool through SHM,
+TCP, or RDMA.  The evaluation should establish the following outcomes:
+\begin{itemize}
+  \item latency grows as the LMbench working set exceeds the cache hierarchy,
+  and OCEAN/SHM follows the large-working-set trend of real CXL hardware;
+  \item per-host STREAM bandwidth decreases as more hosts contend for the
+  shared pool, while OCEAN/RDMA follows real-hardware OSU Allgather latency
+  more closely than OCEAN/TCP;
+  \item increasing hardware-coherence coverage substantially improves TPC-C
+  NewOrder throughput, and software-coherent protocols degrade for
+  write-heavy YCSB mixes;
+  \item the twelve GROMACS placement policies produce a measurable execution
+  time spread (up to 7\% in the paper), with SHM faster than TCP; and
+  \item calibrated LogP parameters reproduce measured point-to-point latency
+  and contention trends substantially better than the defaults.
+\end{itemize}
+Exact numerical agreement is not expected across different processors,
+networks, and CXL devices.  Reviewers should evaluate the qualitative trends
+and the tolerances stated for each experiment below.
+
+\arttime
+
+\begin{center}
+\small
+\begin{tabular}{lr}
+\toprule
+Stage & Expected wall time \\
+\midrule
+Host and QEMU setup & \oceantodo{measure; likely several hours} \\
+VM image preparation & \oceantodo{measure} \\
+Smoke test & \oceantodo{measure} \\
+Fidelity experiments & \oceantodo{measure} \\
+Coherence case study & \oceantodo{measure} \\
+Policy sweep & \oceantodo{measure} \\
+LogP calibration & \oceantodo{measure} \\
+Plot generation & \oceantodo{measure} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Artifact setup downloads and builds QEMU and a Linux kernel and therefore is
+expected to dominate preparation time.  Full application experiments may take
+hours; a reduced smoke-test path should be supplied for functional review.
+
+\artin
+
+\artinpart{Hardware}
+
+The baseline deployment requires an x86-64 Linux host with hardware
+virtualization (KVM), enough cores and memory for at least two QEMU guests,
+and sufficient disk space for one image per guest.  Root access is required to
+create bridges/TAP devices, launch QEMU with KVM, and configure DAX/NUMA
+resources.  SHM and TCP evaluation can run on one physical server.  RDMA
+evaluation requires RDMA-capable NICs and a configured RDMA fabric.  Hardware
+validation and LogP calibration require two hosts connected to shared CXL
+Type-3 memory through a CXL switch.
+
+The paper's reference hardware consists of two compute nodes, each with two
+Intel Xeon Gold 5420+ sockets (28 cores/socket) and 1~TB DRAM, connected via
+PCIe~5.0 to an FPGA-based CXL memory system providing a 32~GB shared pool.
+\oceantodo{state the minimum RAM, disk capacity, RDMA NIC model/link rate, and
+whether reviewers will receive access to the physical CXL testbed}.
+
+\artinpart{Software}
+
+The paper uses QEMU~10.0 and a Linux~6.16-rc7 guest kernel.  The repository
+build uses CMake and C++20 and depends on GCC/G++~13, Clang/LLVM, libbpf,
+libcxxopts, Boost, fmt, spdlog, RDMA CM/libibverbs, libpmem, and the standard
+QEMU build dependencies.  Python analysis requires NumPy, pandas, Matplotlib,
+and SciPy where used.  Workload-specific requirements include OpenMPI,
+LMbench, STREAM, OSU Micro-Benchmarks~7.4, Tigon, YCSB, and GROMACS~2026.1.
+
+The setup script targets Ubuntu and installs its dependencies with APT.
+\oceantodo{record the tested host distribution/version, exact kernel, Python,
+OpenMPI, compiler, and library versions; freeze every Git submodule revision}.
+
+\artinpart{Datasets / Inputs}
+
+LMbench, STREAM, and OSU generate synthetic inputs.  The latency experiment
+uses a 64-byte stride and array sizes from 48~MB through 2048~MB.  STREAM runs
+Copy, Scale, Add, and Triad while varying the host count from one to ten.  OSU
+runs MPI Allgather over powers-of-two message sizes.
+
+Tigon uses TPC-C NewOrder and YCSB mixes on two nodes under the concurrency
+protocols stated in the paper.  GROMACS uses the PEPSIN input and twelve
+placement policies.  The LogP calibration benchmark operates on shared DAX
+memory from two MPI ranks and uses streaming groups of 512 cache lines and
+$N\in\{1,2,4,8\}$ shared locks for contention fitting.
+\oceantodo{archive the exact TPC-C scale factor/database image, YCSB records
+and operation count, PEPSIN \texttt{.tpr} input, random seeds, warm-up policy,
+and repetitions for every experiment}.
+
+\artinpart{Installation and Deployment}
+
+Clone the archived artifact recursively and verify its revision:
+\begin{verbatim}
+git clone --recursive <ARTIFACT-URL> OCEAN
+cd OCEAN
+git checkout <ARTIFACT-COMMIT>
+git submodule update --init --recursive
+git status --short
+\end{verbatim}
+The last command should print nothing.  On a dedicated Ubuntu host, install
+and build the dependencies and modified QEMU:
+\begin{verbatim}
+bash script/setup_host.sh
+cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=g++-13
+cmake --build build -j"$(nproc)"
+ctest --test-dir build --output-on-failure
+\end{verbatim}
+Configure a two-guest network on one machine with
+\texttt{bash script/setup\_network.sh 2}; use
+\texttt{setup\_optional\_cross\_machine\_network.sh} for multiple physical
+hosts.  Download the archived guest kernel and disk image, make a private copy
+for each guest, and then start the memory server and guests as described in
+the artifact README.
+
+Because setup scripts modify host networking and install system packages, they
+must be run only on a dedicated evaluation machine.  The repository README's
+mutable download links must be replaced by DOI-hosted files with checksums
+before evaluation.  \oceantodo{insert exact archive filenames, SHA-256 sums,
+and noninteractive commands for preparing and launching all guest images}.
+
+\artcomp
+
+The complete workflow is
+\begin{align*}
+T_1\ (\text{build}) &\rightarrow T_2\ (\text{network/images}) \\
+&\rightarrow T_3\ (\text{server/VMs}) \\
+&\rightarrow T_4\ (\text{verify DAX}) \\
+&\rightarrow T_5\ (\text{experiments}) \\
+&\rightarrow T_6\ (\text{plots/checks}).
+\end{align*}
+In $T_1$, build OCEAN, QEMU, the guest kernel/modules, and workloads.  In
+$T_2$, create the bridge/TAP topology and one copy of the guest image per VM.
+In $T_3$, launch the OCEAN memory server before the guests.  In $T_4$, verify
+device enumeration, DAX, NUMA topology, and guest-to-guest connectivity.  In
+$T_5$, run each baseline and OCEAN configuration with identical workload
+parameters, including all repetitions.  In $T_6$, parse raw logs, report the
+mean and dispersion, regenerate the plots, and compare the stated invariants.
+
+All raw outputs must be written to a new, timestamped result directory rather
+than overwriting the reference results.  Record the commit hash, submodule
+hashes, host/guest software versions, CPU topology, and the exact command line
+with each run.  \oceantodo{provide one top-level driver that implements this
+workflow and a reduced smoke-test option}.
+
+\artout
+
+A successful setup produces OCEAN executables under \texttt{build/}, launches
+the memory server without fatal errors, boots every guest, exposes
+\texttt{/dev/dax0.0} (or a documented equivalent) in each guest, and permits
+cross-guest communication.  Each evaluation creates raw, machine-readable
+results plus plots corresponding to Figs.~3--9 and values for Table~II.
+Reference outputs should be retained under \texttt{artifact/reference/}.
+\oceantodo{add raw reference data and a validation script that returns nonzero
+when required outputs are absent or outside the stated tolerance}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  AE Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendixAE
+
+\arteval{1}
+\noindent\textbf{Build and multi-host functional smoke test.}
+
+\artin
+
+Follow the installation and deployment procedure for $A_1$.  The smoke test
+requires one x86-64 KVM host, two guest images, and the SHM transport; no RDMA
+or physical CXL hardware is required.  Start the memory server with a 1~GB
+pool, launch two guests, and retain the server and guest console logs.
+\oceantodo{replace the descriptive launch step with exact commands matching
+the frozen QEMU scripts and image filenames}.
+
+\artcomp
+
+Inside each guest, run:
+\begin{verbatim}
+lspci | grep -i cxl
+ls -l /dev/dax*
+numactl --hardware
+ping -c 4 <OTHER-GUEST-IP>
+\end{verbatim}
+Map the same DAX-backed test region in both guests, write a deterministic
+cache-line pattern from guest~0, read and verify it from guest~1, then reverse
+writer and reader.  Finally, run the repository's DAX litmus tests for message
+passing, store buffering, atomicity, and tearing.
+\begin{verbatim}
+ctest --test-dir build --output-on-failure
+\end{verbatim}
+\oceantodo{add a single script that performs the cross-guest pattern test and
+litmus suite and documents the number of iterations}.
+
+\artout
+
+Pass criteria are: both guests enumerate the emulated Type-3 device; each has
+a DAX device and the expected NUMA node; all pings succeed; both directions of
+the shared-memory pattern test return zero mismatches; and every enabled CTest
+and litmus test passes.  The result demonstrates the functional portions of
+$C_1$--$C_3$, but does not by itself establish performance fidelity.
+
+\arteval{2}
+\noindent\textbf{Microbenchmark fidelity (Figs.~3--5).}
+
+\artin
+
+Use the reference VM deployment.  LMbench needs one guest.  STREAM uses one
+through ten guests sharing one OCEAN pool.  OSU Allgather uses two guests and
+is evaluated with the SHM/TCP/RDMA configurations stated in the paper;
+physical-CXL results may be reproduced only on the supplied CXL testbed.
+
+\artcomp
+
+For LMbench, run \texttt{lat\_mem\_rd} with 64-byte stride at array sizes
+48, 64, 96, 128, 192, 256, 384, 512, 1024, 1536, and 2048~MB.  For STREAM,
+run Copy, Scale, Add, and Triad at host counts 1--10 and report per-host MB/s.
+For OSU, set \texttt{CXL\_DAX\_PATH=/dev/dax0.0}, preload the MPI CXL shim,
+and run \texttt{osu\_allgather} over its powers-of-two message sizes.  Run the
+same number of warm-ups and measured repetitions for every configuration.
+\oceantodo{provide the exact driver commands, repetitions, aggregation rule,
+and plotting scripts that regenerate Figs.~3--5 from raw logs}.
+
+\artout
+
+The evaluator should confirm three invariants: (1) LMbench latency increases
+as the working set leaves cache and the OCEAN/SHM large-array curve follows
+the real-CXL trend; (2) per-host STREAM bandwidth declines monotonically or
+near-monotonically as host count increases; and (3) OCEAN/RDMA is closer to
+the real-CXL OSU curve than OCEAN/TCP.  For small OSU messages, the paper
+reports OCEAN/RDMA within approximately $2\times$ of hardware and TCP at
+approximately $3\times$ hardware.  Deviations should be explained using the
+recorded host and network configuration.
+
+\arteval{3}
+\noindent\textbf{Hardware-coherence case study (Figs.~6--7).}
+
+\artin
+
+Deploy two OCEAN nodes and Tigon.  Use the archived TPC-C database and YCSB
+inputs.  Pin software versions, CPU allocation, database scale, client count,
+and memory capacity across configurations.  Clear or restore database state
+between runs as required by the workload protocol.
+
+\artcomp
+
+Run TPC-C NewOrder with 2PL while sweeping hardware-cache-coherence coverage
+from 0\% through 100\%.  Run YCSB while sweeping the write fraction from 0\%
+through 100\% for Tigon, DS2PL+, and Sundial+.  Use identical warm-up,
+measurement, and repetition counts at each point; report per-node or aggregate
+throughput consistently.  \oceantodo{add exact commands and state all sweep
+increments, database/client parameters, repetitions, and confidence interval}.
+
+\artout
+
+For Fig.~6, throughput should rise strongly with HCC coverage; the reference
+result rises from 12.3K txn/s at 0\% to 138K txn/s at 100\%, approximately
+$11\times$.  For Fig.~7, Tigon should remain comparatively stable as writes
+increase, while DS2PL+ and Sundial+ should degrade sharply beyond roughly 40\%
+writes.  These trends support $C_4$ by isolating the cost of software cache
+flushes in write-heavy, cross-host transactional workloads.
+
+\arteval{4}
+\noindent\textbf{GROMACS placement-policy sweep (Fig.~8).}
+
+\artin
+
+Use the two-node OCEAN deployment, the archived PEPSIN input, GROMACS~2026.1,
+and the MPI CXL shim.  Hold the number of ranks, threads, steps, CPU binding,
+memory capacity, and transport configuration fixed across policies.
+
+\artcomp
+
+Run both SHM and TCP for Baseline, Interleave, NUMA, frequency migration,
+page-table-aware placement, frequency caching, heat-aware placement, Hybrid,
+Locality, FIFO caching, Hugepage, Lifetime, and LoadBalance.  Collect execution
+time after warm-up and plot the mean and dispersion for every policy/transport
+pair.  \oceantodo{reconcile the paper's statement of ``twelve'' policies with
+the thirteen labels visible in Fig.~8, then provide the exact commands,
+repetitions, and plotting script}.
+
+\artout
+
+The reference baseline is 1.083~s.  SHM should be faster than TCP for each
+policy, and policy choice should create a spread of as much as approximately
+7\% between the best and worst reference configurations.  The precise ranking
+may depend on the host; the central result is a repeatable, nonzero policy
+sensitivity under otherwise identical conditions.
+
+\arteval{5}
+\noindent\textbf{LogP calibration (Fig.~9 and Table~II).}
+
+\artin
+
+This evaluation requires two physical hosts mapping the same CXL Type-3 DAX
+device through a CXL switch, MPI, cache-flush instructions, and the
+\texttt{cxl\_switch\_lock\_bench\_mpi} calibration program.
+\oceantodo{include this program in the frozen artifact and document the CXL
+device, switch, firmware, DAX configuration, CPU affinity, and clock source}.
+
+\artcomp
+
+Measure sender overhead $o_s$ with
+\texttt{clflushopt+sfence}, receiver overhead $o_r$ with
+\texttt{clflush+mfence+load}, propagation latency $L$ with cross-host
+ping-pong, and gap $g$ with 512-line streaming flushes.  Compute
+$L=(RTT-2o_s-2o_r)/2$ and $L_{hop}=L/2$.  Fit contention while both hosts
+operate on $N\in\{1,2,4,8\}$ shared CAS locks.  Apply the fitted parameters to
+OCEAN, rerun the latency and contention tests, and regenerate Fig.~9 and
+Table~II.  \oceantodo{state repetitions, outlier handling, fit procedure, and
+exact commands}.
+
+\artout
+
+The reference fitted values are $o_s=18$~ns, $o_r=438$~ns, $L=142$~ns,
+$g=4.6$~ns, and 13.9~GB/s.  The calibrated point-to-point latency should be
+within 5\% of measured hardware and the contention model within 10\% across
+the tested utilization range.  The receiver overhead should dominate the
+latency decomposition, and calibration should visibly improve both the
+point-to-point and contention fits relative to the defaults.
+
+\end{document}
