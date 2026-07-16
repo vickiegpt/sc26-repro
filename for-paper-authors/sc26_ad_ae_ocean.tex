@@ -70,8 +70,7 @@ commit hash used for evaluation}.
 Artifact & Contributions & Reproducible paper elements \\
 \midrule
 $A_1$ & $C_1$--$C_4$ & Functional CXL device and multi-host deployment;
-Figs.~3--5 (fidelity); Figs.~6--7 (coherence); Fig.~8 (placement policies);
-Fig.~9 and Table~II (LogP calibration) \\
+Figs.~3--5 (LMbench, STREAM, and OSU fidelity) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -89,7 +88,9 @@ device model, host and network setup scripts, workload integrations, and
 analysis scripts.  The core implementation supports $C_1$--$C_3$; the
 microbenchmark, application, and calibration workflows support $C_4$.  The
 artifact also contains representative logs and plots under
-\texttt{artifact/}.
+\texttt{OCEAN/artifact/}.  The figure-oriented reproducibility workflow for
+Figs.~3--5 is under \texttt{artifacts/fig3},
+\texttt{artifacts/fig4}, and \texttt{artifacts/fig5}.
 
 \artexp
 
@@ -117,27 +118,14 @@ and the tolerances stated for each experiment below.
 
 \arttime
 
-\begin{center}
-\small
-\begin{tabular}{lr}
-\toprule
-Stage & Expected wall time \\
-\midrule
-Host and QEMU setup & \oceantodo{measure; likely several hours} \\
-VM image preparation & \oceantodo{measure} \\
-Smoke test & \oceantodo{measure} \\
-Fidelity experiments & \oceantodo{measure} \\
-Coherence case study & \oceantodo{measure} \\
-Policy sweep & \oceantodo{measure} \\
-LogP calibration & \oceantodo{measure} \\
-Plot generation & \oceantodo{measure} \\
-\bottomrule
-\end{tabular}
-\end{center}
-
 Artifact setup downloads and builds QEMU and a Linux kernel and therefore is
 expected to dominate preparation time.  Full application experiments may take
 hours; a reduced smoke-test path should be supplied for functional review.
+Fresh measurements will be reproduced on Chameleon Cloud.  The artifact will
+record the lease, node hardware type, image, network configuration, and
+observed wall time for every stage rather than estimating those values before
+the reproduction campaign.  Regenerating and validating Figs.~3--5 from the
+archived CSV files takes less than one minute.
 
 \artin
 
@@ -151,6 +139,10 @@ resources.  SHM and TCP evaluation can run on one physical server.  RDMA
 evaluation requires RDMA-capable NICs and a configured RDMA fabric.  Hardware
 validation and LogP calibration require two hosts connected to shared CXL
 Type-3 memory through a CXL switch.
+
+The reproducibility campaign for Figs.~3--5 will use reserved bare-metal
+nodes on Chameleon Cloud.  Each run manifest will identify the Chameleon
+hardware type, image, lease, node allocation, and network configuration.
 
 The paper's reference hardware consists of two compute nodes, each with two
 Intel Xeon Gold 5420+ sockets (28 cores/socket) and 1~TB DRAM, connected via
@@ -238,22 +230,31 @@ $T_5$, run each baseline and OCEAN configuration with identical workload
 parameters, including all repetitions.  In $T_6$, parse raw logs, report the
 mean and dispersion, regenerate the plots, and compare the stated invariants.
 
-All raw outputs must be written to a new, timestamped result directory rather
-than overwriting the reference results.  Record the commit hash, submodule
-hashes, host/guest software versions, CPU topology, and the exact command line
-with each run.  \oceantodo{provide one top-level driver that implements this
-workflow and a reduced smoke-test option}.
+All raw outputs must be written to a new result directory rather than
+overwriting the reference results.  Record the commit hash, submodule hashes,
+host/guest software versions, CPU topology, and the exact command line with
+each run.  For Figs.~3--5, the top-level driver supports independent figure
+selection:
+\begin{verbatim}
+./run-experiments.sh --figures 3,4,5
+\end{verbatim}
+The default command regenerates and validates the graphs from archived CSV
+files.  Passing \texttt{--mode collect --data results} invokes the
+figure-specific fresh-measurement wrapper.
 
 \artout
 
-A successful setup produces OCEAN executables under \texttt{build/}, launches
+A successful setup produces OCEAN executables under \texttt{OCEAN/build/}, launches
 the memory server without fatal errors, boots every guest, exposes
 \texttt{/dev/dax0.0} (or a documented equivalent) in each guest, and permits
-cross-guest communication.  Each evaluation creates raw, machine-readable
-results plus plots corresponding to Figs.~3--9 and values for Table~II.
-Reference outputs should be retained under \texttt{artifact/reference/}.
-\oceantodo{add raw reference data and a validation script that returns nonzero
-when required outputs are absent or outside the stated tolerance}.
+cross-guest communication.  The current figure workflow creates raw,
+machine-readable results plus PDF and PNG plots for Figs.~3--5.  Reference
+CSV files are retained under each \texttt{artifacts/figN/data/} directory,
+and each figure has a validation script that returns nonzero when required
+outputs are absent or a stated invariant fails.  The Fig.~4 reference CSV is
+explicitly marked as digitized from the submitted raster graph and must be
+replaced by the original aggregated STREAM data before the artifact is
+archived.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  AE Appendix
@@ -314,12 +315,36 @@ physical-CXL results may be reproduced only on the supplied CXL testbed.
 
 For LMbench, run \texttt{lat\_mem\_rd} with 64-byte stride at array sizes
 48, 64, 96, 128, 192, 256, 384, 512, 1024, 1536, and 2048~MB.  For STREAM,
-run Copy, Scale, Add, and Triad at host counts 1--10 and report per-host MB/s.
+run Copy, Scale, Add, and Triad at host counts 1, 2, 4, 6, 8, and 10 and
+report per-host MB/s.
 For OSU, set \texttt{CXL\_DAX\_PATH=/dev/dax0.0}, preload the MPI CXL shim,
 and run \texttt{osu\_allgather} over its powers-of-two message sizes.  Run the
 same number of warm-ups and measured repetitions for every configuration.
-\oceantodo{provide the exact driver commands, repetitions, aggregation rule,
-and plotting scripts that regenerate Figs.~3--5 from raw logs}.
+The supplied collectors default to three LMbench warm-ups and five measured
+invocations for each configuration.  They retain every raw stdout log and
+plot the arithmetic mean.
+
+Install Matplotlib and recreate the submitted graphs from archived CSV files:
+\begin{verbatim}
+python3 -m pip install -r requirements.txt
+./run-experiments.sh --figures 3,4,5 \
+  --mode all --data reference
+\end{verbatim}
+For fresh measurements, configure the benchmark-specific runner described in
+each figure README and execute, for example:
+\begin{verbatim}
+export LMBENCH_LAT_MEM_RD=/path/to/lat_mem_rd
+./run-experiments.sh --figures 3 \
+  --mode collect --data results
+./run-experiments.sh --figures 3 \
+  --mode all --data results
+\end{verbatim}
+Figure~4 uses \texttt{STREAM\_RUNNER}, an executable that accepts a host
+count and prints standard STREAM result lines.  Figure~5 uses
+\texttt{OSU\_RUNNER}, an executable that accepts \texttt{rdma},
+\texttt{tcp}, or \texttt{real} and prints standard OSU result rows.  These
+runners isolate site-specific VM and network orchestration from the common
+parsing, aggregation, plotting, and validation logic.
 
 \artout
 

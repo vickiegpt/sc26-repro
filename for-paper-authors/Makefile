@@ -1,4 +1,4 @@
-PAPER=sc26_ad_ae_template
+PAPER=sc26_ad_ae_ocean
 
 $(PAPER).pdf: $(PAPER).tex
 	pdflatex $(PAPER)
