@@ -6,14 +6,14 @@ This repository functions as an extra source of information on topics
 associated with the
 [Reproducibility Initiative at SC26.](https://sc26.supercomputing.org/program/papers/reproducibility-initiative/)
 
-## OCEAN Figures 3-5
+## OCEAN and SimCXL Figures 3-5
 
-The OCEAN artifact workflow for the paper's fidelity graphs is under
+The artifact workflow for the paper's fidelity graphs is under
 [`artifacts/`](artifacts):
 
-- Figure 3: LMbench random-memory-access latency;
-- Figure 4: STREAM bandwidth versus host count; and
-- Figure 5: OSU MPI Allgather latency.
+- Figure 3: LMbench random-memory-access latency on OCEAN and SimCXL;
+- Figure 4: OCEAN STREAM bandwidth versus host count; and
+- Figure 5: OCEAN OSU MPI Allgather latency.
 
 Install the plotting dependency and regenerate all three figures with:
 
@@ -27,6 +27,11 @@ paper's qualitative invariants. Each figure directory also provides a
 collection wrapper for fresh measurements. We will run the fresh
 reproduction campaign on Chameleon Cloud and record the allocated hardware,
 image, network, and benchmark runtimes with the resulting raw logs.
+
+Figure 3 has two independent collection paths: OCEAN/SHM runs LMbench inside
+an OCEAN guest, while the SimCXL path runs the same sizes and stride through a
+pinned gem5/SimCXL configuration. Figures 4 and 5 are OCEAN-only experiments.
+The final pinned implementation checkouts belong under [`tools/`](tools).
 
 ## For SC26 Paper Authors
 
