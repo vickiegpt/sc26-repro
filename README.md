@@ -33,6 +33,28 @@ an OCEAN guest, while the SimCXL path runs the same sizes and stride through a
 pinned gem5/SimCXL configuration. Figures 4 and 5 are OCEAN-only experiments.
 The final pinned implementation checkouts belong under [`tools/`](tools).
 
+## OCEAN Figures 6--9
+
+The pinned OCEAN implementation and its Figures 6--9 reproduction workflow
+are available in the [`Ocean/`](Ocean) submodule. Initialize it after cloning:
+
+```bash
+git submodule update --init Ocean
+python3 Ocean/script/reproduce_figures_6_9.py --help
+```
+
+The workflow writes successful collections to
+`Ocean/artifact/figures_6_9/<run-id>/`, with raw logs, normalized CSV files,
+PDF/PNG plots, and `manifest.json`. No measured Figures 6--9 result bundle is
+committed yet: Figures 6 and 7 require Tigon, Figure 8 requires a valid
+GROMACS/PEPSIN runner, and Figure 9 requires two hosts sharing a real CXL
+Type-3 DAX range. Check a configured machine without mutation using:
+
+```bash
+python3 Ocean/script/reproduce_figures_6_9.py doctor \
+  --fig all --config Ocean/script/figures_6_9/config.example.toml
+```
+
 ## For SC26 Paper Authors
 
 A LaTeX template for the AD/AE Appendices is provided in [for-paper-authors](for-paper-authors).

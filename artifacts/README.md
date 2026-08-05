@@ -50,8 +50,11 @@ wall time alongside the raw benchmark logs.
 Figures 6--9 use the same runner contract as the first three workflows but
 require their author-supplied workload inputs and orchestration entrypoints.
 Figure 9 additionally requires the two-host physical-CXL testbed. Their
-directory READMEs specify the output schemas consumed by the common plotting
-and validation code.
+implementation is pinned in the repository's ``Ocean`` submodule. Run
+``Ocean/script/reproduce_figures_6_9.py`` for prerequisite checks, collection,
+validation, and plotting. Successful runs are stored under
+``Ocean/artifact/figures_6_9/<run-id>/``; no measured Figures 6--9 result bundle
+is committed until those external prerequisites are exercised.
 
 ## Provenance of the archived CSV files
 
