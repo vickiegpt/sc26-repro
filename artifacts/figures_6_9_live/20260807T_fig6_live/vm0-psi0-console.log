@@ -2621,3 +2621,38 @@ node0 login: [   24.989901] sched: DL replenish lagged too much
 [ 8192.345330] R10: 00007fe17743b6f0 R11: 00007fe1772e33f4 R12: 0000000000000000
 [ 8192.345331] R13: 00007fff126e01a0 R14: 00007fff12484960 R15: 00000000005c0f08
 [ 8192.345333]  </TASK>
+[ 8220.344895] watchdog: BUG: soft lockup - CPU#0 stuck for 778s! [bench_ycsb:50138]
+[ 8220.344902] Modules linked in: nd_pmem nd_btt dax_pmem kmem device_dax sunrpc binfmt_misc cfg80211 8021q garp ppdev mrp stp llc snd_pcm joydev iTCO_wdt intel_pmc_bxt iTCO_vendor_support snd_timer snd psmouse vga16fb soundcore i2c_i801 vgastate i2c_mux pcspkr sha1_ssse3 parport_pc i2c_smbus lpc_ich parport bochs input_leds serio_raw mac_hid sch_fq_codel efi_pstore nfnetlink vsock_loopback vmw_vsock_virtio_transport_common vmw_vsock_vmci_transport vsock vmw_vmci dmi_sysfs qemu_fw_cfg ip_tables x_tables autofs4
+[ 8220.344944] CPU: 0 UID: 0 PID: 50138 Comm: bench_ycsb Tainted: G             L      6.16.0-rc7+ #3 PREEMPT(voluntary) 
+[ 8220.344947] Tainted: [L]=SOFTLOCKUP
+[ 8220.344947] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org 04/01/2014
+[ 8220.344950] RIP: 0010:folio_add_file_rmap_pmd+0x161/0x190
+[ 8220.345170] Code: 48 0f ba 6b 68 3f eb 84 65 ff 05 ca 9f 43 02 f0 49 0f ba 28 1f 0f 83 19 ff ff ff 65 ff 0d b7 9f 43 02 74 26 f3 90 48 8b 43 68 <a9> 00 00 00 80 75 f3 eb d5 0f 1f 44 00 00 e9 61 ff ff ff 48 89 df
+[ 8220.345171] RSP: 0000:ffffc900069ffcf0 EFLAGS: 00000286
+[ 8220.345173] RAX: 000000008000000b RBX: ffffea001a470000 RCX: 0000000000000000
+[ 8220.345174] RDX: 0000000000000012 RSI: 0000000000000000 RDI: ffffea001a470000
+[ 8220.345174] RBP: ffffc900069ffd00 R08: ffffea001a470068 R09: 0000000000000000
+[ 8220.345175] R10: ffff88811bd3f500 R11: 0000000000000000 R12: ffff88811bd3f500
+[ 8220.345175] R13: ffffc900069ffde8 R14: ffffea00050ddf28 R15: 0000000000000001
+[ 8220.345177] FS:  00007fe17959fd40(0000) GS:ffff8882f4059000(0000) knlGS:0000000000000000
+[ 8220.345178] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 8220.345186] CR2: 00000001016003a0 CR3: 0000000101cc4000 CR4: 00000000000406f0
+[ 8220.345190] Call Trace:
+[ 8220.345192]  <TASK>
+[ 8220.345197]  vmf_insert_folio_pmd+0x15b/0x1e0
+[ 8220.345205]  dev_dax_huge_fault+0x33c/0x4a0 [device_dax]
+[ 8220.345208]  __handle_mm_fault+0x7cf/0x1020
+[ 8220.345211]  ? sched_tick+0xfd/0x280
+[ 8220.345218]  handle_mm_fault+0xe7/0x2f0
+[ 8220.345219]  do_user_addr_fault+0x22b/0x6c0
+[ 8220.345224]  exc_page_fault+0x7c/0x1a0
+[ 8220.345230]  asm_exc_page_fault+0x27/0x30
+[ 8220.345233] RIP: 0033:0x3399d4
+[ 8220.345237] Code: 7d f8 48 8b 7d f8 e8 ab 01 00 00 48 83 c4 10 5d c3 cc cc cc cc cc 55 48 89 e5 48 89 7d f8 48 89 75 f0 48 8b 45 f8 48 8b 4d f0 <48> 89 08 5d c3 cc cc cc cc cc cc cc 55 48 89 e5 48 83 ec 10 48 89
+[ 8220.345237] RSP: 002b:00007fff124843a0 EFLAGS: 00010202
+[ 8220.345238] RAX: 00000001016003a0 RBX: 00007fe17744e008 RCX: 0000000000000000
+[ 8220.345239] RDX: 0000000000000009 RSI: 0000000000000000 RDI: 00000001016003a0
+[ 8220.345239] RBP: 00007fff124843a0 R08: 0000000000000000 R09: 00007fe17743b6c0
+[ 8220.345240] R10: 00007fe17743b6f0 R11: 00007fe1772e33f4 R12: 0000000000000000
+[ 8220.345240] R13: 00007fff126e01a0 R14: 00007fff12484960 R15: 00000000005c0f08
+[ 8220.345243]  </TASK>
