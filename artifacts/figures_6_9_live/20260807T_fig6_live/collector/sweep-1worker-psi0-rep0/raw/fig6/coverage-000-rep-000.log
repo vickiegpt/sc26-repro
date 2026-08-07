@@ -1,0 +1,2 @@
+node=0 NewOrder throughput=315.125000 txn/s
+node=1 NewOrder throughput=384.125000 txn/s

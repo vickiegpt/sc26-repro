@@ -1,0 +1,183 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "0",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:15:10.081966+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:12:29.441799+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "25",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:17:49.983334+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:15:10.082120+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "50",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:20:29.774009+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:17:49.983501+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "70",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:23:09.426091+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:20:29.774134+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "80",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:25:49.002654+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:23:09.426220+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "90",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:28:29.147897+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:25:49.002784+00:00"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/victoryang00/sc26-repro/Ocean/script/figures_6_9/runners/fig6_tigon.py",
+        "--tigon-root",
+        "/home/victoryang00/CXLMemSim/workloads/tigon",
+        "--coverage",
+        "100",
+        "--workers",
+        "1",
+        "--run-seconds",
+        "10",
+        "--warmup-seconds",
+        "2",
+        "--ssh-timeout",
+        "300",
+        "--init-timeout",
+        "360"
+      ],
+      "dry_run": false,
+      "ended_utc": "2026-08-07T22:31:08.716390+00:00",
+      "returncode": 0,
+      "started_utc": "2026-08-07T22:28:29.148028+00:00"
+    }
+  ],
+  "configuration_sha256": "97062244357c6a127cc135e6241ef3cb95108fd9ffbc32f66f2aa63aeade6fe1",
+  "created_utc": "2026-08-07T22:31:08.810273+00:00",
+  "files": {
+    "/home/victoryang00/sc26-repro/artifacts/figures_6_9_live/20260807T_fig6_live/collector/sweep-owner-first/normalized/fig6.csv": "2cd466d6b6f381198ad0bd9bd02c9992542b0ba1afafdcfeb14d6e6a366ea458"
+  },
+  "git_dirty": true,
+  "git_revision": "3c982515bdf9443d9dcaa7f72e51af81b7c3d9fd",
+  "hostname": "gpu01",
+  "platform": "Linux-6.14.0-1009-intel-x86_64-with-glibc2.43",
+  "python_version": "3.13.9",
+  "source": "measured"
+}

@@ -1,0 +1,19 @@
+[run]
+output_root = "/home/victoryang00/sc26-repro/artifacts/figures_6_9_live/20260807T_fig9_live/collector"
+repetitions = 1
+timeout_s = 1800
+source = "measured"
+
+[fig9]
+workdir = "/home/victoryang00/sc26-repro/Ocean"
+command = ["python3", "{repo_root}/script/figures_6_9/runners/fig9_vm.py", "--binary", "{repo_root}/build/microbench/cxl_switch_lock_bench_mpi", "--dax-path", "{dax_path}", "--iterations", "{iterations}", "--map-offset", "{map_offset}", "--map-size", "{map_size}", "--acknowledge-dax-write"]
+dax_path = "/dev/dax0.0"
+dax_scope = "runner"
+iterations = 10000
+map_offset = 0
+map_size = 2097152
+acknowledge_dax_writes = true
+default_o_s_ns = 20.0
+default_L_ns = 150.0
+default_o_r_ns = 20.0
+default_g_ns = 4.0

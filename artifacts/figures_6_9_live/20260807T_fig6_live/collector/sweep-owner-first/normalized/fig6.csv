@@ -1,0 +1,15 @@
+coverage_pct,node_id,throughput_txn_s,repetition,source
+0,0,334.25,0,measured
+0,1,318.875,0,measured
+25,0,399.25,0,measured
+25,1,357.875,0,measured
+50,0,330.0,0,measured
+50,1,326.25,0,measured
+70,0,344.625,0,measured
+70,1,330.125,0,measured
+80,0,364.875,0,measured
+80,1,326.625,0,measured
+90,0,356.625,0,measured
+90,1,350.25,0,measured
+100,0,341.125,0,measured
+100,1,347.5,0,measured

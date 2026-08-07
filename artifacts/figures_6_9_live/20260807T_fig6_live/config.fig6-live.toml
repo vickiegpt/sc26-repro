@@ -1,0 +1,10 @@
+[run]
+output_root = "/home/victoryang00/sc26-repro/artifacts/figures_6_9_live/20260807T_fig6_live/collector"
+repetitions = 1
+timeout_s = 600
+source = "measured"
+
+[fig6]
+workdir = "/home/victoryang00/CXLMemSim/workloads/tigon"
+coverage_pct = [0, 25, 50, 70, 80, 90, 100]
+command = ["python3", "{repo_root}/script/figures_6_9/runners/fig6_tigon.py", "--tigon-root", "{workdir}", "--coverage", "{coverage_pct}", "--workers", "1", "--run-seconds", "10", "--warmup-seconds", "2", "--ssh-timeout", "300", "--init-timeout", "360"]

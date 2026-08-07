@@ -1,0 +1,44 @@
+fig6: bench_tpcc exited on 192.168.100.10 before 'average commit:':
+c: size=356 base=0x100000000 offset=33713712 ptr=0x102026e30
+I20260807 20:15:13.040373  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33714464 ptr=0x102027120
+I20260807 20:15:13.040391  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33714480 ptr=0x102027130
+I20260807 20:15:13.060967  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33715232 ptr=0x102027420
+I20260807 20:15:13.060987  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33715248 ptr=0x102027430
+I20260807 20:15:13.081175  7804 TwoPLPashaHelper.h:1294] WLOCK_RELEASE_COMMIT (LOCAL): #25000 lmeta=0x732839322dc0 old_tid=0x8000000000000003 new_tid=0x4 write_locked=1
+I20260807 20:15:13.081321  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33715616 ptr=0x1020275a0
+I20260807 20:15:13.081336  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33715632 ptr=0x1020275b0
+I20260807 20:15:13.098093  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33716000 ptr=0x102027720
+I20260807 20:15:13.098112  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33716016 ptr=0x102027730
+I20260807 20:15:13.127565  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33717152 ptr=0x102027ba0
+I20260807 20:15:13.127583  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33717168 ptr=0x102027bb0
+I20260807 20:15:13.177225  7804 TwoPLPashaHelper.h:994] WLOCK_ACQUIRE (LOCAL): #20000 outstanding=20001 lmeta=0x73283856a960 old_tid=0x1 new_tid=0x8000000000000001
+I20260807 20:15:13.197832  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33718304 ptr=0x102028020
+I20260807 20:15:13.197856  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33718320 ptr=0x102028030
+I20260807 20:15:13.223729  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33719072 ptr=0x102028320
+I20260807 20:15:13.223747  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33719088 ptr=0x102028330
+I20260807 20:15:13.233173  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33719456 ptr=0x1020284a0
+I20260807 20:15:13.233198  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33719472 ptr=0x1020284b0
+I20260807 20:15:13.274894  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33720608 ptr=0x102028920
+I20260807 20:15:13.274919  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33720624 ptr=0x102028930
+I20260807 20:15:13.284569  7804 TwoPLPashaHelper.h:1294] WLOCK_RELEASE_COMMIT (LOCAL): #26000 lmeta=0x732836dbc630 old_tid=0x8000000000000002 new_tid=0x3 write_locked=1
+I20260807 20:15:13.293607  7804 CXLMemory.h:294] Bump alloc: size=8 base=0x100000000 offset=33720992 ptr=0x102028aa0
+I20260807 20:15:13.293623  7804 CXLMemory.h:294] Bump alloc: size=356 base=0x100000000 offset=33721008 ptr=0x102028ab0
+F20260807 20:15:13.305488  7804 TwoPLPashaHelper.h:1472] Check failed: scc_data->ref_cnt > 0 
+*** Check failure stack trace: ***
+    @     0x73284353c031  google::LogMessage::Fail()
+    @     0x732843543463  google::LogMessage::SendToLog()
+    @     0x73284353bb78  google::LogMessage::Flush()
+    @     0x73284354866d  google::LogMessageFatal::~LogMessageFatal()
+    @          0x12377e5  star::TwoPLPashaHelper::release_migrated_row()
+    @          0x12325b6  star::TwoPLPasha<>::release_migrated_rows()
+    @          0x121c119  star::TwoPLPasha<>::commit()
+    @          0x120c8bd  star::Executor<>::start()
+    @          0x10d5d99  std::__invoke_impl<>()
+    @          0x10d5cdd  std::__invoke<>()
+    @          0x10d5cb2  _ZNSt6thread8_InvokerISt5tupleIJMN4star6WorkerEFvvEPS3_EEE9_M_invokeIJLm0ELm1EEEEvSt12_Index_tupleIJXspT_EEE
+    @          0x10d5c75  std::thread::_Invoker<>::operator()()
+    @          0x10d5b59  std::thread::_State_impl<>::_M_run()
+    @     0x732842ee1224  (unknown)
+    @     0x732842c9cb7b  (unknown)
+    @     0x732842d1a7b8  (unknown)
+

@@ -1,0 +1,47 @@
+fig6: bench_tpcc exited on 192.168.100.11 before 'average commit:':
+34)'s listener 0, retry in 5 seconds.
+I20260807 21:58:13.334592  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:18.336555  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:23.338369  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:28.339382  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:33.341064  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:38.342844  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:43.344789  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:48.346668  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:53.348799  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:58:58.351012  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:59:03.352401  1104 Coordinator.h:548] Coordinator 1 failed to connect 0(192.168.100.10:1234)'s listener 0, retry in 5 seconds.
+I20260807 21:59:06.974647  1117 Socket.h:69] Disabling nagle
+I20260807 21:59:06.974807  1117 Coordinator.h:517] Listener accepted connection from coordinator 0
+I20260807 21:59:06.974838  1117 Coordinator.h:520] Listener 0 on coordinator 1 exits.
+I20260807 21:59:08.354163  1104 Socket.h:69] Disabling nagle
+I20260807 21:59:08.354332  1104 Coordinator.h:557] Coordinator 1 connected to 0
+I20260807 21:59:08.354453  1104 Coordinator.h:569] Coordinator 1 connected to all peers.
+I20260807 21:59:08.354525  1104 Dispatcher.h:38] IncomingDispatcher 0 coord_id 1
+I20260807 21:59:08.354828  1104 Dispatcher.h:210] OutgoingDispatcher 0 coord_id 1
+I20260807 21:59:08.355121  1104 Coordinator.h:216] Coordinator starts to run 2 workers.
+I20260807 21:59:08.355363  1119 Dispatcher.h:57] Incoming Dispatcher started, numCoordinators = 2, numWorkers = 1, group id = 0, coordinator = 1
+*** Aborted at 1786139948 (unix time) try "date -d @1786139948" if you are using GNU date ***
+I20260807 21:59:08.356120  1120 Executor.h:79] Executor 0 starts.
+I20260807 21:59:08.356629  1121 Manager.h:232] Manager(worker id = 1) on the non-coordinator node started.
+I20260807 21:59:08.356700  1120 CXLMemory.h:228] Custom allocator ready for thread 1 (replaces cxlalloc) (global ID = 3) on host 1
+I20260807 21:59:08.357487  1120 CXL_EBR.h:84] init local EBR metadata, coordinator_id = 1 thread_id = 0
+PC: @                0x0 (unknown)
+*** SIGFPE (@0x10cd2d7) received by PID 1104 (TID 0x795cd73ff6c0) from PID 17617623; stack trace: ***
+    @     0x795cd86a8206 (unknown)
+    @     0x795cd7c49df0 (unknown)
+    @          0x10cd2d7 star::MPSCRingBuffer::size()
+    @          0x10cd141 star::MPSCRingBuffer::recv()
+    @          0x10ccb82 star::BufferedReader::fetch_message()
+    @          0x10cc2c6 star::BufferedReader::next_message()
+    @          0x10caf00 star::IncomingDispatcher::fetchMessageFromCoordinator()
+    @          0x10c02f9 star::IncomingDispatcher::start()
+    @          0x10ca359 std::__invoke_impl<>()
+    @          0x10ca29d std::__invoke<>()
+    @          0x10ca272 _ZNSt6thread8_InvokerISt5tupleIJMN4star18IncomingDispatcherEFvvEPS3_EEE9_M_invokeIJLm0ELm1EEEEvSt12_Index_tupleIJXspT_EEE
+    @          0x10ca235 std::thread::_Invoker<>::operator()()
+    @          0x10ca119 std::thread::_State_impl<>::_M_run()
+    @     0x795cd7ee1224 (unknown)
+    @     0x795cd7c9cb7b (unknown)
+    @     0x795cd7d1a7b8 (unknown)
+

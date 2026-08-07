@@ -1,0 +1,11 @@
+[run]
+output_root = "/home/victoryang00/sc26-repro/artifacts/figures_6_9_live/20260807T_fig7_live/collector"
+repetitions = 1
+timeout_s = 2400
+source = "measured"
+
+[fig7]
+workdir = "/tmp/tigon-fig7.2ZDBoQ"
+protocols = ["Tigon", "DS2PL+", "Sundial+"]
+write_ratio_pct = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+command = ["python3", "{repo_root}/script/figures_6_9/runners/fig7_tigon.py", "--tigon-root", "{workdir}", "--protocol", "{protocol}", "--write-ratio", "{write_ratio_pct}", "--workers", "1", "--run-seconds", "10", "--warmup-seconds", "2", "--cxl-entry-num", "512", "--ssh-timeout", "300", "--init-timeout", "600", "--done-timeout", "1800"]
