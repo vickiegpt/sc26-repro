@@ -55,18 +55,17 @@ policies with GROMACS, and calibration of the inter-host LogP timing model.
 \subsection{Computational Artifacts}
 
 \begin{description}
-\item[$A_1$] OCEAN source code, modified QEMU, workload integrations,
-guest-image construction scripts, and the experiment and plotting workflows
-for Figs.~3--9.  The paper implementation is pinned to OCEAN commit
-{\footnotesize\texttt{466731a2fcd3d7b82f8f1faf51517989b575e9d4}}; the newer LegoMem-only
-backend on the development branch is not used for the paper results.
-GROMACS~2026.1 is obtained from its immutable software release,
-\url{https://doi.org/10.5281/zenodo.18887033}.
+\item[$A_1$] The top-level artifact harness, OCEAN source and modified QEMU,
+guest kernel and disk image, LMbench, MPI STREAM, OSU Micro-Benchmarks, the
+MPI CXL shim, and the experiment and plotting scripts for Figs.~3--5.
 
-\item[$A_2$] SimCXL/gem5 source, the two timing-profile configurations,
-guest image and checkpoint procedure, and the Figure~3 LMbench runner.  Its
-manifest records the full SimCXL and gem5 revisions and both timing-profile
-configuration hashes used in the Chameleon campaign.
+\item[$A_2$] SimCXL/gem5 source, its downloaded kernel and disk image, the
+ASIC and FPGA timing profiles, and the SimCXL portion of the Figure~3 runner.
+
+\item[$A_3$] The OCEAN application and calibration workflow for
+Figs.~6--9.  It includes configuration, collection, validation, provenance,
+and plotting code.  Tigon, GROMACS/PEPSIN, and the physical-CXL platform are
+external inputs identified below.
 \end{description}
 
 \begin{center}
@@ -75,9 +74,9 @@ configuration hashes used in the Chameleon campaign.
 \toprule
 Artifact & Contributions & Reproducible paper elements \\
 \midrule
-$A_1$ & $C_1$--$C_4$ & Functional CXL device and multi-host deployment;
-OCEAN series in Figs.~3--9 and Table~II \\
-$A_2$ & $C_4$ & Matched SimCXL LMbench sweep for Fig.~3 \\
+$A_1$ & $C_1$--$C_4$ & OCEAN deployment and Figs.~3--5 \\
+$A_2$ & $C_4$ & SimCXL ASIC/FPGA series in Fig.~3 \\
+$A_3$ & $C_4$ & Figs.~6--9 and Table~II \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -90,32 +89,33 @@ $A_2$ & $C_4$ & Matched SimCXL LMbench sweep for Fig.~3 \\
 
 \artrel
 
-Artifact $A_1$ contains OCEAN's C/C++ implementation, the modified QEMU
-device model, host and network setup scripts, workload integrations, and
-analysis scripts.  The core implementation supports $C_1$--$C_3$; the
-microbenchmark, application, and calibration workflows support $C_4$.  The
-artifact also contains representative logs and plots under
-\texttt{OCEAN/artifact/}.  Artifact $A_2$ contains the pinned SimCXL/gem5
-environment used for the additional Figure~3 simulator sweep.  The expected
-bundle layout is \texttt{tools/OCEAN}, \texttt{tools/SimCXL}, and the common
-figure workflows under \texttt{artifacts/fig3} through
-\texttt{artifacts/fig9}.  Figs.~3--8 are run on Chameleon Cloud; Fig.~9 uses
-the same analysis workflow but fresh collection additionally requires the
-two-host physical-CXL configuration described below.
+The artifact has two evaluation interfaces.  The repository-level
+\texttt{run-experiments.sh} drives Figs.~3--5.  With no arguments it attempts
+fresh execution of all three figures.  Its \texttt{--replot} mode never boots
+a VM or runs a benchmark: it reads the supplied CSV files and regenerates the
+plots.  Passing \texttt{--replot 3}, \texttt{--replot 4}, or
+\texttt{--replot 5} selects one figure.
+
+Figs.~6--9 use the configuration-driven program
+\texttt{Ocean/script/reproduce\_figures\_6\_9.py}.  This second interface
+separates prerequisite checking, collection, validation, and plotting and
+writes each successful run to
+\texttt{Ocean/artifact/figures\_6\_9/<run-id>/}.  The split is intentional:
+Figs.~3--5 have self-contained VM runners, whereas Figs.~6--9 require
+site-specific application commands and, for Fig.~9, a physical shared-CXL
+platform.
 
 \artexp
 
-After deployment, each guest should enumerate a CXL Type-3 device and expose a
-DAX device such as \texttt{/dev/dax0.0}.  Two or more guests should attach to
-the same OCEAN memory server and access the shared memory pool through SHM,
-TCP, or RDMA.  The evaluation should establish the following outcomes:
+After deployment, every OCEAN guest should enumerate an emulated CXL Type-3
+device and expose either a CXL NUMA node or a DAX device such as
+\texttt{/dev/dax0.0}.  The evaluation checks the following outcomes:
 \begin{itemize}
-  \item latency grows as the LMbench working set exceeds the cache hierarchy,
-  and both the OCEAN/SHM and SimCXL sweeps expose the expected cache-to-memory
-  transition;
-  \item per-host STREAM bandwidth decreases as more hosts contend for the
-  shared pool, while OCEAN/RDMA follows real-hardware OSU Allgather latency
-  more closely than OCEAN/TCP;
+  \item the Figure~3 OCEAN and SimCXL LMbench curves reproduce the expected
+  cache-to-CXL transition;
+  \item Figure~4 quantifies how shared-pool STREAM bandwidth changes from two
+  to six OCEAN hosts, and Figure~5 reports two-host OSU Allgather latency from
+  2~B through 16~KiB;
   \item increasing hardware-coherence coverage substantially improves TPC-C
   NewOrder throughput, and software-coherent protocols degrade for
   write-heavy YCSB mixes;
@@ -124,193 +124,132 @@ TCP, or RDMA.  The evaluation should establish the following outcomes:
   \item calibrated LogP parameters reproduce measured point-to-point latency
   and contention trends substantially better than the defaults.
 \end{itemize}
-Exact numerical agreement is not expected across different processors,
-networks, and CXL devices.  Reviewers should evaluate the qualitative trends
-and the tolerances stated for each experiment below.
+Replotting confirms the plotting code and the correspondence between the
+archived tables and figures.  It does not constitute a fresh measurement.
+Likewise, passing unit tests or a prerequisite check for Figs.~6--9 does not
+substitute for successful Tigon, GROMACS, or physical-CXL execution.
 
 \arttime
 
-Artifact setup downloads and builds QEMU and a Linux kernel and therefore is
-expected to dominate preparation time.  Full application experiments may take
-hours; a reduced smoke-test path should be supplied for functional review.
-Fresh OCEAN and SimCXL measurements will be reproduced on Chameleon Cloud.
-The artifact will
-record the lease, node hardware type, image, network configuration, and
-observed wall time for every stage rather than estimating those values before
-the reproduction campaign.  Regenerating and validating Figs.~3--9 from the
-archived CSV files takes less than one minute.
+Tool setup is the longest stage because it compiles OCEAN's QEMU fork and
+SimCXL/gem5 and downloads large guest images and kernels.  Figure~3's gem5
+runs and the application experiments in Figs.~6--8 may take hours.  Figure~9
+also requires scheduled access to the physical-CXL testbed.  Plot-only mode is
+the appropriate short evaluation path when those resources are unavailable.
 
 \artin
 
 \artinpart{Hardware}
 
-The baseline deployment requires an x86-64 Linux host with hardware
-virtualization (KVM), enough cores and memory for at least two QEMU guests,
-and sufficient disk space for one image per guest.  Root access is required to
-create bridges/TAP devices, launch QEMU with KVM, and configure DAX/NUMA
-resources.  SHM and TCP evaluation can run on one physical server.  RDMA
-evaluation requires RDMA-capable NICs and a configured RDMA fabric.  Hardware
-validation and LogP calibration require two hosts connected to shared CXL
-Type-3 memory through a CXL switch.
-
-The reproducibility campaign for Figs.~3--8 will use reserved bare-metal
-nodes on Chameleon Cloud.  OCEAN requires KVM for its QEMU guests; SimCXL runs
-the matched Figure~3 LMbench sweep through gem5 on an allocated compute node.
-Each run manifest will identify the Chameleon hardware type, image, lease,
-node allocation, and network configuration.
-
-The functional two-VM smoke test needs at least 16~GB RAM and 40~GB free disk;
-full ten-guest STREAM runs require at least 64~GB RAM.  TCP and SHM require no
-special NIC.  RDMA results require an InfiniBand or RoCE interface supported
-by libibverbs; the evaluator records its model and negotiated link rate in the
-run manifest.  The physical CXL system is not required for Figs.~3--8.
+Figs.~3--5 require an x86-64 Linux server with KVM, root access for bridge/TAP
+and NUMA configuration, enough memory for as many as six QEMU guests, and
+enough disk space for the downloaded images and private VM overlays.  Figure~3
+also needs the CPU and storage capacity to run gem5.  Figures~4 and 5 require
+working guest-to-guest SSH and MPI connectivity; Figure~5 uses two guests,
+whereas the Figure~4 wrapper defaults to at most six.
 
 The paper's reference hardware for Fig.~9 consists of two compute nodes, each with two
 Intel Xeon Gold 5420+ sockets (28 cores/socket) and 1~TB DRAM, connected via
 PCIe~5.0 to an FPGA-based CXL memory system providing a 32~GB shared pool.
-Fresh Fig.~9 hardware measurements require scheduled access to that system;
-without it, evaluators regenerate Fig.~9 and Table~II from the archived raw
-calibration log and verify the fit.
+Fresh Fig.~9 measurements require two hosts mapping the same CXL Type-3 DAX
+range.  A machine without that topology may validate and plot an archived
+normalized result bundle but cannot reproduce the hardware measurements.
 
 \artinpart{Software}
 
-The paper uses QEMU~10.0 and a Linux~6.16-rc7 guest kernel.  The SimCXL path
-must pin its SimCXL and gem5 revisions, guest image, boot checkpoint, and ASIC
-and FPGA timing-profile files.  The repository
-build uses CMake and C++20 and depends on GCC/G++~13, Clang/LLVM, libbpf,
-libcxxopts, Boost, fmt, spdlog, RDMA CM/libibverbs, libpmem, and the standard
-QEMU build dependencies.  Python analysis requires NumPy, pandas, Matplotlib,
-and SciPy where used.  Workload-specific requirements include OpenMPI,
-LMbench, STREAM, OSU Micro-Benchmarks~7.4, Tigon, YCSB, and GROMACS~2026.1.
-
-The Chameleon baseline is Ubuntu~24.04 (Noble), GCC/G++~13, Python~3.12, and
-OpenMPI~4.1.6.  The guest kernel remains the paper's Linux~6.16-rc7 build.
-At the start of every run, \texttt{uname -a}, compiler, Python, MPI, QEMU,
-package, commit, and submodule versions are written to
-\texttt{results/manifest.txt}; these recorded values, rather than unpinned
-system defaults, identify the evaluated environment.
+The setup supports native Linux and uses Bash, Git, CMake, Make, SCons,
+GCC/G++, Python~3, KVM/QEMU, NumPy, Matplotlib, OpenMPI, LMbench, STREAM, and
+OSU Micro-Benchmarks.  Figure~3 additionally requires SimCXL/gem5.  Figures~6
+and 7 require Tigon, Figure~8 requires GROMACS/PEPSIN and the MPI CXL shim, and
+Figure~9 requires MPI plus the optional
+\texttt{cxl\_switch\_lock\_bench\_mpi} target.  Exact package and revision
+information should be recorded with each fresh result bundle.
 
 \artinpart{Datasets / Inputs}
 
-LMbench, STREAM, and OSU generate synthetic inputs.  The latency experiment
-uses the same pinned LMbench build, 64-byte stride, and array sizes from
-48~MB through 2048~MB for OCEAN and SimCXL.  STREAM runs
-Copy, Scale, Add, and Triad while varying the host count from one to ten.  OSU
-runs MPI Allgather over powers-of-two message sizes.
+LMbench, STREAM, and OSU generate synthetic inputs.  In the OCEAN guest,
+Figure~3 uses a 1024~MB LMbench allocation, 64-byte stride, four repetitions,
+and NUMA binding to the emulated CXL node.  Figure~4 runs MPI STREAM Copy,
+Scale, Add, and Triad while varying the number of hosts up to six.  Figure~5
+runs OSU MPI Allgather on two VMs for message sizes $2^1$ through $2^{14}$
+bytes.
 
-Tigon uses three TPC-C warehouses per host on two hosts and the archived
-database image.  The YCSB sweep uses the same database and client allocation
-for write ratios 0, 10, \ldots, 100 percent.  GROMACS uses the archived
-\texttt{benchMEM.tpr} PEPSIN input, 10,000 MD steps, and one OpenMP thread per
-rank.  Figure~8 compares the baseline with twelve placement policies (thirteen
-x-axis labels in total).  Every reported application point uses one warm-up
-and five measured runs; no outlier is discarded, and plots show the mean and
-sample standard deviation.  The LogP calibration benchmark operates on shared DAX
-memory from two MPI ranks and uses streaming groups of 512 cache lines and
-$N\in\{1,2,4,8\}$ shared locks for contention fitting.
+Figures~6 and 7 use Tigon's TPC-C and YCSB inputs on two OCEAN nodes.
+Figure~8 uses the PEPSIN input with a baseline and twelve alternative
+placement policies under SHM and TCP.  Figure~9 operates on a deliberately
+bounded, shared DAX range from two physical hosts.  These application inputs
+and commands are supplied through the example TOML configuration; the
+evaluator must replace its placeholder workload paths and runners before
+collection.
 
 \artinpart{Installation and Deployment}
 
-Start in the unpacked evaluation directory supplied through the SC submission
-system; the procedure does not depend on an assumed download-archive name.
-The directory has this layout:
+Start at the repository root.  The relevant layout is:
 \begin{verbatim}
-tools/OCEAN/
-tools/SimCXL/
-artifacts/fig3/ ... artifacts/fig9/
+artifacts/setup-tools.sh
+artifacts/tools/OCEAN/
+artifacts/tools/SimCXL/
+artifacts/fig3/ ... artifacts/fig5/
+Ocean/script/reproduce_figures_6_9.py
 run-experiments.sh
-requirements.txt
 \end{verbatim}
-Verify the paper snapshot before building:
+Install system dependencies on a dedicated machine, then perform the common
+setup:
 \begin{verbatim}
-cd tools/OCEAN
-test "$(git rev-parse HEAD)" = \
-  466731a2fcd3d7b82f8f1faf51517989b575e9d4
-git submodule update --init --recursive
-git status --short
+./artifacts/setup-tools.sh --stage deps
+./artifacts/setup-tools.sh
 \end{verbatim}
-The last command should print nothing.  On a dedicated Ubuntu host, install
-and build the dependencies and modified QEMU:
-\begin{verbatim}
-bash script/setup_host.sh
-cmake -S . -B build \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CXX_COMPILER=g++-13
-cmake --build build -j"$(nproc)"
-ctest --test-dir build --output-on-failure
-\end{verbatim}
-Configure a two-guest network on one machine with
-\texttt{bash script/setup\_network.sh 2}; use
-\texttt{setup\_optional\_cross\_machine\_network.sh} for multiple physical
-hosts.  Build the guest assets locally, verify their generated checksums, and
-make one private disk copy per guest:
-\begin{verbatim}
-cd ../..
-sudo ./tools/build-vm-assets.sh tools/vm-assets
-(cd tools/vm-assets && sha256sum -c SHA256SUMS)
-cd tools/OCEAN
-cp --reflink=auto ../vm-assets/qemu.img qemu.img
-cp --reflink=auto ../vm-assets/qemu.img qemu1.img
-cp ../vm-assets/bzImage bzImage
-\end{verbatim}
-Thus the procedure uses the explicit filenames \texttt{qemu.img},
-\texttt{qemu1.img}, and \texttt{bzImage}, without a mutable image-download
-link.  The GROMACS source file is the DOI-hosted
-\texttt{gromacs-2026.1.tar.gz}; its published MD5 is
-\texttt{5e67383cea1093de10d89b807c448733}.
-
-Because setup scripts modify host networking and install system packages, they
-must be run only on a dedicated evaluation machine.  The commands above
-replace the development README's mutable image links for evaluation.
+The first command is separated because package installation requires
+\texttt{sudo}.  The default setup initializes the required OCEAN and SimCXL
+sources, builds SimCXL/gem5, downloads the SimCXL kernel and disk image, runs
+\texttt{tools/OCEAN/script/setup\_host.sh} to build OCEAN's QEMU fork and host
+dependencies, compiles the OCEAN server, and downloads OCEAN's guest kernel
+and image.  The experiment wrappers consume the downloaded resource paths;
+reviewers do not need to edit launcher scripts manually.  Because setup and
+experiment scripts install packages, create bridge/TAP interfaces, and launch
+KVM guests, they should run only on a dedicated evaluation host.
 
 \artcomp
 
-The complete workflow is
-\begin{align*}
-T_1\ (\text{build}) &\rightarrow T_2\ (\text{network/images}) \\
-&\rightarrow T_3\ (\text{server/VMs}) \\
-&\rightarrow T_4\ (\text{verify DAX}) \\
-&\rightarrow T_5\ (\text{experiments}) \\
-&\rightarrow T_6\ (\text{plots/checks}).
-\end{align*}
-In $T_1$, build OCEAN, QEMU, SimCXL/gem5, the guest kernel/modules, and
-workloads.  In
-$T_2$, create the bridge/TAP topology and one copy of the guest image per VM.
-In $T_3$, launch the OCEAN memory server before the guests.  In $T_4$, verify
-device enumeration, DAX, NUMA topology, and guest-to-guest connectivity.  In
-$T_5$, run each baseline and OCEAN configuration with identical workload
-parameters, including all repetitions.  In $T_6$, parse raw logs, report the
-mean and dispersion, regenerate the plots, and compare the stated invariants.
-
-All raw outputs must be written to a new result directory rather than
-overwriting the reference results.  Record the commit hash, submodule hashes,
-host/guest software versions, CPU topology, and the exact command line with
-each run.  For Figs.~3--9, the top-level driver supports independent figure
-selection:
+After setup, a full fresh run of Figs.~3--5 is:
 \begin{verbatim}
 ./run-experiments.sh
-./run-experiments.sh --figures 6,7,8,9 \
-  --mode all --data results
 \end{verbatim}
-The default command regenerates and validates Figs.~3--5 from archived CSV
-files.  Passing \texttt{--mode collect --data results} invokes each
-figure-specific fresh-measurement wrapper; Figs.~6--9 are then plotted from
-those newly collected CSV files.
+The driver attempts Figures~3, 4, and 5 in order.  To regenerate plots from
+the supplied data without launching experiments, use:
+\begin{verbatim}
+./run-experiments.sh --replot
+./run-experiments.sh --replot 3
+./run-experiments.sh --replot 4
+./run-experiments.sh --replot 5
+\end{verbatim}
+
+Figs.~6--9 use a separate configuration.  Copy the example, fill in the
+Tigon and GROMACS commands and the physical-CXL parameters, and run a
+non-mutating prerequisite check before collection:
+\begin{verbatim}
+cp Ocean/script/figures_6_9/config.example.toml \
+   figures_6_9.toml
+python3 Ocean/script/reproduce_figures_6_9.py \
+ doctor --fig all --config figures_6_9.toml
+python3 Ocean/script/reproduce_figures_6_9.py \
+ all --fig all --config figures_6_9.toml
+\end{verbatim}
+Individual figures are selected with \texttt{--fig 6}, \texttt{--fig 7},
+\texttt{--fig 8}, or \texttt{--fig 9}.  Existing normalized Figs.~6--9 data
+can be validated and plotted without running a workload by using the
+\texttt{validate} and \texttt{plot} subcommands described in Evaluation~3.
 
 \artout
 
-A successful setup produces OCEAN executables under \texttt{OCEAN/build/}, launches
-the memory server without fatal errors, boots every guest, exposes
-\texttt{/dev/dax0.0} (or a documented equivalent) in each guest, and permits
-cross-guest communication.  The figure workflow creates raw,
-machine-readable results plus PDF and PNG plots for Figs.~3--9.  Each fresh
-collector writes \texttt{data/results.csv}; author-supplied raw results are
-retained as \texttt{data/reference.csv} under the corresponding figure directory,
-and each figure has a validation script that returns nonzero when required
-outputs are absent or a stated invariant fails.  The Fig.~4 reference CSV is
-explicitly marked as digitized from the submitted raster graph and must be
-replaced by the original aggregated STREAM data before the artifact is
-archived.
+A successful Figures~3--5 run leaves raw logs under
+\texttt{artifacts/logs/}, normalized CSV files under each figure's
+\texttt{data/} directory, and PNG plots beside those tables.  A successful
+Figures~6--9 run contains raw command logs, normalized CSV tables, PDF and PNG
+plots, and a checksum-bearing \texttt{manifest.json} under one run-id.  The
+Figs.~6--9 workflow fails closed when a sweep is incomplete, a workload exits
+nonzero, GROMACS reports zero work, MPI rank metadata is missing, or Fig.~9's
+DAX authorization is absent.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  AE Appendix
@@ -318,263 +257,220 @@ archived.
 \appendixAE
 
 \arteval{1}
-\noindent\textbf{Build and multi-host functional smoke test.}
+\noindent\textbf{Tool setup and plot-only smoke test.}
 
 \artin
 
-Follow the installation and deployment procedure for $A_1$.  The smoke test
-requires one x86-64 KVM host, two guest images, and the SHM transport; no RDMA
-or physical CXL hardware is required.  Start the memory server with a 1~GB
-pool, launch two guests, and retain the server and guest console logs:
-\begin{verbatim}
-cd tools/OCEAN/build
-./cxlmemsim_server --capacity=1024 \
-  --comm-mode=shm >../../../server.log 2>&1 &
-cd ..
-CXL_TRANSPORT_MODE=shm DISK_IMAGE=./qemu.img \
- sudo -E qemu_integration/launch_qemu_cxl.sh \
- >../../guest0.log 2>&1 &
-CXL_TRANSPORT_MODE=shm DISK_IMAGE=./qemu1.img \
- sudo -E qemu_integration/launch_qemu_cxl1.sh \
- >../../guest1.log 2>&1 &
-\end{verbatim}
-
-\artcomp
-
-Inside each guest, run:
-\begin{verbatim}
-lspci | grep -i cxl
-ls -l /dev/dax*
-numactl --hardware
-# guest 0; use .10 when running on guest 1
-ping -c 4 192.168.100.11
-\end{verbatim}
-Map the same DAX-backed test region in both guests, write a deterministic
-cache-line pattern from guest~0, read and verify it from guest~1, then reverse
-writer and reader.  The supplied driver performs this check and the message
-passing, store buffering, atomicity, and tearing litmus tests in both role
-directions.  It uses 1,000 message-passing iterations, 10,000 store-buffering
-iterations, $10^6$ atomic additions, and $2\times10^6$ tearing iterations:
-\begin{verbatim}
-./tools/run-dax-litmus.sh \
-  192.168.100.10 192.168.100.11 /dev/dax0.0
-\end{verbatim}
-
-\artout
-
-Pass criteria are: both guests enumerate the emulated Type-3 device; each has
-a DAX device and the expected NUMA node; all pings succeed; both directions of
-the shared-memory pattern test return zero mismatches; and every enabled CTest
-and litmus test passes.  The result demonstrates the functional portions of
-$C_1$--$C_3$, but does not by itself establish performance fidelity.
-
-\arteval{2}
-\noindent\textbf{Microbenchmark fidelity (Figs.~3--5).}
-
-\artin
-
-Use the reference VM deployment.  LMbench needs one guest.  STREAM uses one
-through ten guests sharing one OCEAN pool.  OSU Allgather uses two guests and
-is evaluated with the SHM/TCP/RDMA configurations stated in the paper;
-physical-CXL results may be reproduced only on the supplied CXL testbed.
-Figure~3 has separate OCEAN and SimCXL paths.  The OCEAN path runs LMbench in
-one OCEAN/SHM guest.  The SimCXL path runs the same sweep in gem5 for the
-documented ASIC and FPGA timing profiles.  Figures~4 and 5 are OCEAN-only.
-
-\artcomp
-
-For LMbench, run \texttt{lat\_mem\_rd} with 64-byte stride at array sizes
-48, 64, 96, 128, 192, 256, 384, 512, 1024, 1536, and 2048~MB.  For STREAM,
-run Copy, Scale, Add, and Triad at host counts 1, 2, 4, 6, 8, and 10 and
-report per-host MB/s.
-For OSU, set \texttt{CXL\_DAX\_PATH=/dev/dax0.0}, preload the MPI CXL shim,
-and run \texttt{osu\_allgather} over its powers-of-two message sizes.  Run the
-same number of warm-ups and measured repetitions for every configuration.
-The supplied collectors default to three LMbench warm-ups and five measured
-invocations for each configuration.  They retain every raw stdout log and
-plot the arithmetic mean.
-
-For SimCXL, create or restore the documented clean boot checkpoint for each
-timing profile, run the same \texttt{lat\_mem\_rd} sizes and stride, and retain
-the complete gem5 command, configuration, simulated-time statistics, and
-stdout for every repetition.  The SimCXL wrapper accepts a profile
-(\texttt{asic} or \texttt{fpga}), array size in MB, and stride in bytes, and
-prints either standard LMbench rows or \texttt{latency\_ns=<value>}.
-
-Install Matplotlib and recreate the submitted graphs from archived CSV files:
+This evaluation checks that the artifact is complete before spending time on
+VMs or gem5.  Plotting requires Python~3 and Matplotlib but does not require
+KVM, root privileges, Tigon, GROMACS, or physical CXL hardware.  Install the
+Python requirements, then replot all supplied Figures~3--5 data:
 \begin{verbatim}
 python3 -m pip install -r requirements.txt
-./run-experiments.sh --figures 3,4,5 \
-  --mode all --data reference
+./run-experiments.sh --replot
 \end{verbatim}
-For fresh measurements, configure the benchmark-specific runner described in
-each figure README and execute, for example:
-\begin{verbatim}
-export LMBENCH_LAT_MEM_RD=./lat_mem_rd
-export SIMCXL_RUNNER=./run-simcxl
-export FIG3_SYSTEMS=ocean,simcxl
-./run-experiments.sh --figures 3 \
-  --mode collect --data results
-./run-experiments.sh --figures 3 \
-  --mode all --data results
-\end{verbatim}
-Figure~4 uses \texttt{STREAM\_RUNNER}, an executable that accepts a host
-count and prints standard STREAM result lines.  Figure~5 uses
-\texttt{OSU\_RUNNER}, an executable that accepts \texttt{rdma},
-\texttt{tcp}, or \texttt{real} and prints standard OSU result rows.  These
-runners isolate site-specific VM and network orchestration from the common
-parsing, aggregation, plotting, and validation logic.
 
-The submitted Figure~3 comparison series labeled CXL-DMSim were recovered
-from that work's published graph.  Fresh results produced by $A_2$ are labeled
-SimCXL (ASIC) and SimCXL (FPGA); they must not be relabeled as CXL-DMSim data.
+\artcomp
+
+Confirm that individual selection invokes only the requested plotter:
+\begin{verbatim}
+./run-experiments.sh --replot 3
+./run-experiments.sh --replot 4
+./run-experiments.sh --replot 5
+\end{verbatim}
+For Figs.~6--9, run the OCEAN unit tests and the non-mutating prerequisite
+check.  The example configuration intentionally contains placeholders, so the
+\texttt{doctor} command may report unavailable workloads or hardware; this is
+an informative result rather than measured reproduction:
+\begin{verbatim}
+python3 -m pytest Ocean/tests/figures_6_9
+cd Ocean
+python3 script/reproduce_figures_6_9.py doctor \
+ --fig all \
+ --config script/figures_6_9/config.example.toml
+\end{verbatim}
 
 \artout
 
-The evaluator should confirm three invariants: (1) LMbench latency increases
-as the working set leaves cache for both the OCEAN and SimCXL sweeps, and the
-OCEAN/SHM large-array curve follows the real-CXL trend; (2) per-host STREAM
-bandwidth declines monotonically or
-near-monotonically as host count increases; and (3) OCEAN/RDMA is closer to
-the real-CXL OSU curve than OCEAN/TCP.  For small OSU messages, the paper
-reports OCEAN/RDMA within approximately $2\times$ of hardware and TCP at
-approximately $3\times$ hardware.  Deviations should be explained using the
-recorded host and network configuration.
+Pass criteria are that every requested Figures~3--5 plot is created and each
+plot command exits zero.  The Figures~6--9 unit tests must pass.  A successful
+\texttt{doctor} additionally proves that the configured workload executables,
+hostfile, Python modules, MPI benchmark, and DAX character device are present.
+None of these checks alone proves a fresh performance result.
+
+\arteval{2}
+\noindent\textbf{Fresh microbenchmark execution (Figs.~3--5).}
+
+\artin
+
+Use a dedicated Linux/KVM server and complete
+\texttt{artifacts/setup-tools.sh}.  The script initializes OCEAN and SimCXL
+and their dependencies, builds OCEAN's QEMU fork and SimCXL/gem5, downloads
+the required kernels and disk images, and places those resources where the
+experiment wrappers expect them.  Figure~3 requires one OCEAN VM and separate
+SimCXL simulations.  Figure~4 uses up to six OCEAN VMs.  Figure~5 uses two
+OCEAN VMs with guest-to-guest networking and MPI.
+
+\artcomp
+
+Invoke all three experiments with the default command:
+\begin{verbatim}
+./run-experiments.sh
+\end{verbatim}
+
+For Fig.~3, the wrapper discovers the guest's emulated CXL NUMA node and runs
+the following command inside the single OCEAN VM:
+\begin{verbatim}
+numactl --cpunodebind=0 --membind=${CXL_NODE} \
+ ./lat_mem_rd -t -N 4 1024 64
+\end{verbatim}
+This binds the benchmark thread to CPU NUMA node~0, allocates memory from the
+emulated CXL node, performs four timed repetitions, uses a 1024~MB maximum
+working set, and advances at 64-byte stride.  The same figure wrapper runs the
+SimCXL ASIC and FPGA profiles and parses their LMbench output before producing
+the comparison plot.
+
+For Fig.~4, the wrapper caps the experiment at six hosts by default.  It
+creates the OCEAN guests, copies the MPI STREAM workload from
+\texttt{artifacts/tools/OCEAN/workloads/stream} to the VMs, constructs an MPI
+hostfile containing the active nodes, and runs STREAM through
+\texttt{libmpi\_cxl\_shim.so}.  The shim allows OCEAN to intercept the MPI
+memory operations.  The runner accepts an explicit host list for smaller
+runs; an evaluator with sufficient resources may deliberately request more
+than six hosts.
+
+For Fig.~5, the wrapper creates two VMs and a two-entry MPI hostfile.  The OSU
+Allgather binary is already present in the supplied guest image, so no
+workload copy is needed.  It preloads \texttt{libmpi\_cxl\_shim.so}, binds the
+shim to the emulated CXL DAX device, and runs Allgather for message sizes from
+$2^1$ to $2^{14}$ bytes.
+
+\artout
+
+The expected machine-readable outputs are the Figure~3 OCEAN, SimCXL ASIC,
+and SimCXL FPGA CSV files; the Figure~4 STREAM CSV containing host count,
+kernel, throughput, and timing fields; and the Figure~5 CSV containing
+transport, message size, and average latency.  Each runner also creates a PNG
+plot and retains timestamped logs.  A missing series, skipped host count,
+failed MPI command, or empty result table must be reported as an incomplete
+experiment, not silently replaced with archived data.
 
 \arteval{3}
-\noindent\textbf{Hardware-coherence case study (Figs.~6--7).}
+\noindent\textbf{Application experiments (Figs.~6--8).}
 
 \artin
 
-Deploy two OCEAN nodes and Tigon.  Use the archived TPC-C database and YCSB
-inputs.  Pin software versions, CPU allocation, database scale, client count,
-and memory capacity across configurations.  Clear or restore database state
-between runs as required by the workload protocol.
+Copy \texttt{config.example.toml} to a new configuration file.  Figures~6 and
+7 require a working Tigon checkout and its database image.  Figure~8 requires
+the PEPSIN input, GROMACS, and an executable runner for every SHM/TCP and
+placement-policy combination.  Configure two distinct OCEAN VMs with working
+peer networking.  Before collection, run:
+\begin{verbatim}
+python3 Ocean/script/reproduce_figures_6_9.py \
+ doctor --fig all --config figures_6_9.toml
+\end{verbatim}
 
 \artcomp
 
-Run TPC-C NewOrder with 2PL while sweeping hardware-cache-coherence coverage
-from 0\% through 100\%.  Run YCSB while sweeping the write fraction from 0\%
-through 100\% for Tigon, DS2PL+, and Sundial+.  Use identical warm-up,
-measurement, and repetition counts at each point; report per-node or aggregate
-throughput consistently.  The archived configuration enumerates the Fig.~6
-coverage points (0, 25, 50, 70, 80, 90, 95, and 100 percent) and the Fig.~7
-write ratios (0 through 100 percent in steps of 10).  The TPC-C base command is:
+For Fig.~6, run TPC-C NewOrder on two nodes using 2PL and sweep HCC coverage
+over 0, 25, 50, 70, 80, 90, and 100 percent.  Tigon must be invoked with the
+persistence/WAL settings required by the supplied runner, including:
 \begin{verbatim}
-cd tools/OCEAN/workloads/tigon
-./scripts/run_tpcc_dax.sh TwoPLPasha 2 3 \
- mixed 10 15 1 0 1 Clock OnDemand 200000000 \
- 1 WriteThrough None 15 5 GROUP_WAL 20000 0 0
+--persist_latency=0
+--wal_group_commit_time=0
+--wal_group_commit_size=0
 \end{verbatim}
-The figure drivers set only the coverage/protocol fields while holding the
-remaining arguments fixed, perform one warm-up and five measured repetitions,
-retain per-node throughput, and report mean and sample standard deviation:
+The collector requires a throughput record for each of the two nodes at every
+configured coverage value.
+
+For Fig.~7, sweep the write ratio from 0 through 100 percent in steps of 10
+for Tigon, DS2PL+, and Sundial+.  For Fig.~8, run the baseline and twelve
+alternative placement policies for both SHM and TCP.  Keep rank count, thread
+count, PEPSIN input, MD steps, CPU binding, and memory capacity fixed.  The
+collector rejects fatal GROMACS output, missing completion markers, zero
+created threads, and nonpositive elapsed time.
+
+Collect, validate, and plot the three figures with:
 \begin{verbatim}
-./run-experiments.sh --figures 6,7 \
-  --mode collect --data results
-./run-experiments.sh --figures 6,7 \
-  --mode all --data results
+python3 Ocean/script/reproduce_figures_6_9.py \
+ all --fig 6 --config figures_6_9.toml
+python3 Ocean/script/reproduce_figures_6_9.py \
+ all --fig 7 --config figures_6_9.toml
+python3 Ocean/script/reproduce_figures_6_9.py \
+ all --fig 8 --config figures_6_9.toml
 \end{verbatim}
 
 \artout
 
-For Fig.~6, throughput should rise strongly with HCC coverage; the reference
-result rises from 12.3K txn/s at 0\% to 138K txn/s at 100\%, approximately
-$11\times$.  For Fig.~7, Tigon should remain comparatively stable as writes
-increase, while DS2PL+ and Sundial+ should degrade sharply beyond roughly 40\%
-writes.  These trends support $C_4$ by isolating the cost of software cache
-flushes in write-heavy, cross-host transactional workloads.
-
-\arteval{4}
-\noindent\textbf{GROMACS placement-policy sweep (Fig.~8).}
-
-\artin
-
-Use the two-node OCEAN deployment, the archived PEPSIN input, GROMACS~2026.1,
-and the MPI CXL shim.  Hold the number of ranks, threads, steps, CPU binding,
-memory capacity, and transport configuration fixed across policies.
-
-\artcomp
-
-Run both SHM and TCP for the baseline and twelve policies: Interleave, NUMA,
-frequency migration,
-page-table-aware placement, frequency caching, heat-aware placement, Hybrid,
-Locality, FIFO caching, Hugepage, Lifetime, and LoadBalance.  Collect execution
-time after warm-up and plot the mean and dispersion for every policy/transport
-pair.  Thus ``twelve policies'' in the paper means twelve alternatives to the
-baseline, and Fig.~8 correctly contains thirteen x-axis labels.  Build the
-shim and run the fixed PEPSIN workload as follows; the figure driver supplies
-the transport and policy environment for each row:
-\begin{verbatim}
-cd tools/OCEAN/workloads/gromacs
-./build.sh
-mpirun --allow-run-as-root \
- -x CXL_SHIM_TRACE=1 \
- -x CXL_DAX_PATH=/dev/dax0.0 \
- -x LD_PRELOAD=$PWD/libmpi_cxl_shim.so \
- --hostfile ./hostfile \
- ./gromacs-2026.1/build/bin/gmx_mpi mdrun \
- -s benchMEM.tpr -nsteps 10000 -resethway -ntomp 1
-cd ../../../
-./run-experiments.sh --figures 8 \
- --mode collect --data results
-./run-experiments.sh --figures 8 \
- --mode all --data results
-\end{verbatim}
-
-\artout
-
-The reference baseline is 1.083~s.  SHM should be faster than TCP for each
-policy, and policy choice should create a spread of as much as approximately
-7\% between the best and worst reference configurations.  The precise ranking
-may depend on the host; the central result is a repeatable, nonzero policy
-sensitivity under otherwise identical conditions.
+Each successful command creates raw logs, a normalized CSV table, plots, and
+a manifest.  Fig.~6 should show increasing TPC-C throughput with increasing
+HCC coverage.  Fig.~7 should expose the different sensitivity of the three
+protocols to write-heavy mixes.  Fig.~8 should contain all thirteen policy
+labels for both backends and a nonzero execution-time measurement for every
+point.  Cross-machine numerical differences are acceptable, but incomplete
+sweeps are not.
 
 \balance
-\arteval{5}
+\arteval{4}
 \noindent\textbf{LogP calibration (Fig.~9 and Table~II).}
 
 \artin
 
 This evaluation requires two physical hosts mapping the same CXL Type-3 DAX
-device through a CXL switch, MPI, cache-flush instructions, and the
-\texttt{cxl\_switch\_lock\_bench\_mpi} calibration program.
-The release preflight requires that source and a
-\texttt{hardware-manifest.txt} recording the CXL device and switch identifiers,
-firmware, DAX region, CPU affinity, and invariant-TSC clock source; packaging
-fails if either file is absent.
+range through a CXL switch, MPI, cache-flush instructions, and the optional
+\texttt{cxl\_switch\_lock\_bench\_mpi} benchmark.  Record the host, CPU,
+CXL device, switch, firmware, DAX range, CPU affinity, and clock source.  Do
+not run this step against a mounted, allocated, or otherwise in-use DAX range.
 
 \artcomp
 
-Measure sender overhead $o_s$ with
-\texttt{clflushopt+sfence}, receiver overhead $o_r$ with
-\texttt{clflush+mfence+load}, propagation latency $L$ with cross-host
-ping-pong, and gap $g$ with 512-line streaming flushes.  Compute
-$L=(RTT-2o_s-2o_r)/2$ and $L_{hop}=L/2$.  Fit contention while both hosts
-operate on $N\in\{1,2,4,8\}$ shared CAS locks.  Apply the fitted parameters to
-OCEAN, rerun the latency and contention tests, and regenerate Fig.~9 and
-Table~II.  Each phase uses one warm-up and five measured runs.  The analysis
-retains every observation, reports mean and sample standard deviation, derives
-$o_s$, $o_r$, and $L$ from the formulas above, computes $g$ from the slope of
-the 512-line flush time, and uses least squares for the piecewise-linear
-contention fit.  Run collection and analysis with:
+Build and self-test the benchmark.  The self-test uses anonymous memory and
+does not prove cross-host CXL operation:
 \begin{verbatim}
-mpirun -np 2 --hostfile artifacts/fig9/hosts \
- artifacts/fig9/cxl_switch_lock_bench_mpi \
- --dax /dev/dax0.0 --flush-lines 512 \
- --locks 1,2,4,8 --warmup 1 --repetitions 5 \
- --output artifacts/fig9/data/results.csv
-./run-experiments.sh --figures 9 \
- --mode all --data results
+cmake -S Ocean -B Ocean/build \
+ -DLEGOMEM_BUILD_QEMU_INTEGRATION=OFF
+cmake --build Ocean/build \
+ --target cxl_switch_lock_bench_mpi -j2
+Ocean/build/microbench/cxl_switch_lock_bench_mpi \
+ --self-test --iterations 32
 \end{verbatim}
+Then set the exact DAX character device, hostfile, iteration count, map offset,
+and map size in \texttt{figures\_6\_9.toml}.  Collection is fail-closed:
+\texttt{acknowledge\_dax\_writes} must be set to true and the configured
+command must contain \texttt{--acknowledge-dax-write}.  The supplied example
+limits the writable mapping to a page-aligned 2~MiB range.  After verifying
+that range is safe, run:
+\begin{verbatim}
+python3 Ocean/script/reproduce_figures_6_9.py \
+ all --fig 9 --config figures_6_9.toml
+\end{verbatim}
+The benchmark measures sender overhead $o_s$, receiver overhead $o_r$,
+propagation latency $L$, streaming gap $g$, bandwidth, and contention as
+effective utilization increases.  The analysis derives the measured and
+calibrated parameter tables rather than embedding the paper's fitted values in
+the plotter.
 
 \artout
 
-The reference fitted values are $o_s=18$~ns, $o_r=438$~ns, $L=142$~ns,
-$g=4.6$~ns, and 13.9~GB/s.  The calibrated point-to-point latency should be
-within 5\% of measured hardware and the contention model within 10\% across
-the tested utilization range.  The receiver overhead should dominate the
-latency decomposition, and calibration should visibly improve both the
-point-to-point and contention fits relative to the defaults.
+A successful run produces \texttt{fig9\_samples.csv},
+\texttt{fig9\_params.csv}, and \texttt{fig9\_contention.csv}, plus Fig.~9a--c
+in PDF and PNG and a checksum manifest.  The expected qualitative result is
+that the calibrated decomposition and contention curve follow measured
+hardware more closely than the default OCEAN parameters.  Missing MPI ranks,
+phases, samples, DAX authorization, or an unsafe device configuration must
+terminate collection without publishing a normalized table.
+
+When fresh application or physical-CXL resources are unavailable, an existing
+normalized Figs.~6--9 result directory can be checked and replotted without
+executing any workload:
+\begin{verbatim}
+python3 Ocean/script/reproduce_figures_6_9.py \
+ validate --fig all --input <run>/normalized
+python3 Ocean/script/reproduce_figures_6_9.py \
+ plot --fig all --input <run>/normalized \
+ --output <run>/replot --format pdf --format png
+\end{verbatim}
+This plot-only path must retain the source labels in the normalized tables and
+must not be described as a fresh experimental reproduction.
 
 \end{document}

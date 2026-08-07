@@ -1,0 +1,56 @@
+<h2>Proposed Figure 6–9 data flow</h2>
+<p class="subtitle">Every row produces validated, provenance-bearing tables before plotting.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Ocean/script/reproduce_figures_6_9.py</div>
+  <div class="mockup-body">
+    <div style="display:grid;grid-template-columns:100px 1.4fr 44px 1.25fr 44px 1fr;gap:10px;align-items:center">
+      <strong>Figure 6</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">Tigon TPC-C<br><small>HCC coverage sweep</small></div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">coverage, node, txn/s, repetition</div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">fig6.pdf + .png</div>
+
+      <strong>Figure 7</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">Tigon · DS2PL+ · Sundial+<br><small>YCSB write-ratio sweep</small></div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">protocol, write %, txn/s, repetition</div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">fig7.pdf + .png</div>
+
+      <strong>Figure 8</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">GROMACS PEPSIN<br><small>SHM/TCP × 12 policies</small></div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">backend, policy, elapsed s, repetition</div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">fig8.pdf + .png</div>
+
+      <strong>Figure 9</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">Two-host MPI+DAX benchmark<br><small>operations, LogP, contention</small></div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">samples + params + contention tables</div>
+      <strong>→</strong>
+      <div class="placeholder" style="min-height:auto;padding:14px">fig9.pdf + .png</div>
+    </div>
+  </div>
+</div>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>Included</h4>
+    <ul>
+      <li><code>doctor</code>, <code>collect</code>, <code>validate</code>, <code>plot</code>, and <code>all</code></li>
+      <li>Resumable per-figure runs and machine-readable manifest</li>
+      <li>Paper-like typography, labels, legends, and vector PDF output</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>Hard boundaries</h4>
+    <ul>
+      <li>Missing Tigon or DAX hardware is reported, never fabricated</li>
+      <li>Failed processes and zero-work logs invalidate a run</li>
+      <li>Measured and reference/demo sources cannot share one plot silently</li>
+    </ul>
+  </div>
+</div>

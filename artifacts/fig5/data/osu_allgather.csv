@@ -1,0 +1,8 @@
+transport,size_bytes,avg_latency_us
+Message Size (bytes),Approximate Avg Latency (us)
+2,178
+4,184
+8,182
+16,198
+32,178
+64,174

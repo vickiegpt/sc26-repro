@@ -1,0 +1,53 @@
+<h2>How should Figures 6–9 be reproduced?</h2>
+<p class="subtitle">The checkout lacks valid measured inputs for several panels, so provenance and failure handling matter.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:22px">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;text-align:center">
+        <div class="placeholder" style="min-height:auto;padding:18px 8px">Experiment adapters<br><small>Tigon · GROMACS · CXL MPI</small></div>
+        <strong>→</strong>
+        <div class="placeholder" style="min-height:auto;padding:18px 8px">Validated CSV<br><small>source + run metadata</small></div>
+        <strong>→</strong>
+        <div class="placeholder" style="min-height:auto;padding:18px 8px">Paper-matched plots<br><small>Fig. 6 · 7 · 8 · 9a–c</small></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Layered reproducer (recommended)</h3>
+      <p>One CLI with collect, validate, and plot stages. Supports measured runs and clearly labeled paper-reference inputs without mixing them.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:22px">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;text-align:center">
+        <div class="placeholder" style="min-height:auto;padding:18px 8px">User-provided CSV</div>
+        <strong>→</strong>
+        <div class="placeholder" style="min-height:auto;padding:18px 8px">Plots only</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Plot-only package</h3>
+      <p>Small and reliable, but does not automate Tigon, GROMACS, or LogP experiments.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:22px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+        <div class="placeholder" style="min-height:auto;padding:18px 5px">Setup</div>
+        <div class="placeholder" style="min-height:auto;padding:18px 5px">Run all</div>
+        <div class="placeholder" style="min-height:auto;padding:18px 5px">Parse</div>
+        <div class="placeholder" style="min-height:auto;padding:18px 5px">Plot</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Monolithic shell script</h3>
+      <p>Simple invocation but brittle across VM, multi-host, privilege, and real-hardware boundaries; difficult to resume safely.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <p><strong>Integrity rule:</strong> failed runs, zero-thread runs, and missing benchmark outputs never become plotted measurements.</p>
+</div>

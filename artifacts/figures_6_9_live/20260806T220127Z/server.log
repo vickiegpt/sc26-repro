@@ -1,0 +1,57 @@
+[2026-08-06 22:03:31.418] [warning] [main_server.cc:756] Topology file topology.txt not found, using default topology
+[2026-08-06 22:03:31.418] [info] [main_server.cc:788] ========================================
+[2026-08-06 22:03:31.418] [info] [main_server.cc:789] CXLMemSim CXL Type3 Memory Server
+[2026-08-06 22:03:31.418] [info] [main_server.cc:790] ========================================
+[2026-08-06 22:03:31.418] [info] [main_server.cc:791] Server Configuration:
+[2026-08-06 22:03:31.418] [info] [main_server.cc:796]   Communication Mode: PGAS Shared Memory (cxl_backend.h)
+[2026-08-06 22:03:31.418] [info] [main_server.cc:798]   PGAS SHM Name: /cxlmemsim_pgas
+[2026-08-06 22:03:31.418] [info] [main_server.cc:826]   Port: 9999
+[2026-08-06 22:03:31.418] [info] [main_server.cc:827]   Topology: topology.txt
+[2026-08-06 22:03:31.418] [info] [main_server.cc:828]   Capacity: 1024 MB
+[2026-08-06 22:03:31.418] [info] [main_server.cc:833]   Backing Mode: POSIX shared memory
+[2026-08-06 22:03:31.418] [info] [main_server.cc:844]   Default latency: 100 ns
+[2026-08-06 22:03:31.418] [info] [main_server.cc:845]   Interleave size: 256 bytes
+[2026-08-06 22:03:31.418] [info] [main_server.cc:846]   DCD: disabled
+[2026-08-06 22:03:31.418] [info] [main_server.cc:847]   GFAM: disabled
+[2026-08-06 22:03:31.418] [info] [main_server.cc:848] CXL Type3 Operations Supported:
+[2026-08-06 22:03:31.418] [info] [main_server.cc:849]   - CXL_TYPE3_READ
+[2026-08-06 22:03:31.418] [info] [main_server.cc:850]   - CXL_TYPE3_WRITE
+[2026-08-06 22:03:31.418] [info] [main_server.cc:870] ========================================
+[2026-08-06 22:03:31.418] [info] [shared_memory_manager.cc:47] SharedMemoryManager: Capacity 1024MB, Total size: 1073741824 bytes
+[2026-08-06 22:03:31.418] [info] [main_server.cc:251] LSA initialized: 262144 bytes
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:166] Created new shared memory: /cxlmemsim_pgas
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:251] Mapped shared memory at address: 0x796f7751e000
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:284] Initialized header: 16777215 cachelines available
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:285] Base address: 0x0 (0 = accept any address)
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:298] Preserving existing data in shared memory
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:310] Initialized data area: 1073741768 bytes
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:115] SharedMemoryManager initialized successfully
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:116]   Shared memory: /cxlmemsim_pgas
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:117]   Size: 1024 MB
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:122]   Base address: 0x0
+[2026-08-06 22:03:31.419] [info] [shared_memory_manager.cc:123]   Cachelines: 16777215
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1003] Shared memory initialized:
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1004]   Name: /cxlmemsim_pgas
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1005]   Size: 1073741824 bytes
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1006]   Base address: 0x0
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1007]   Cachelines: 16777215
+[2026-08-06 22:03:31.419] [info] [main_server.cc:1023] >>> PGAS SHM mode: Skipping TCP socket initialization <<<
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2321] PGAS shared memory initialized:
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2322]   Name: /cxlmemsim_pgas
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2323]   Memory size: 1024 MB (16777216 cachelines)
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2324]   Total mapped size: 2048 MB (including metadata)
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2325]   Entry size: 128 bytes (64 data + 64 metadata)
+[2026-08-06 22:03:32.518] [info] [main_server.cc:1029] Server using PGAS shared memory mode (cxl_backend.h protocol)
+[2026-08-06 22:03:32.518] [info] [main_server.cc:1030] No TCP port binding - communication via /cxlmemsim_pgas only
+[2026-08-06 22:03:32.518] [info] [main_server.cc:1082] Running in PGAS SHM mode (no TCP accept loop)
+[2026-08-06 22:03:32.518] [info] [main_server.cc:2332] Running in PGAS shared memory mode
+[2026-08-06 23:59:20.057] [info] [main_server.cc:2715] PGAS shared memory cleaned up
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1165] Server Statistics:
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1166]   Total Reads: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1167]   Total Writes: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1168]   Atomic FAA: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1169]   Atomic CAS: 0 (success: 0)
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1170]   Fences: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1171]   Coherency Invalidations: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1172]   Coherency Downgrades: 0
+[2026-08-06 23:59:20.057] [info] [main_server.cc:1173]   Back Invalidations: 0

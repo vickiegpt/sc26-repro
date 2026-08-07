@@ -1,0 +1,91 @@
+
+┌──────────────────────────────────────────────────────────┐
+│    CXL MPI SHIM LIBRARY v3.0 - Remotable Pointer Edition  │
+├──────────────────────────────────────────────────────────┤
+│ Host: node0                                                │
+│ PID:  861                                                  │
+│ Time: 1786130330                                           │
+├──────────────────────────────────────────────────────────┤
+│ FEATURES:                                                │
+│   - CXL Direct Send/Recv via shared DAX device          │
+│   - Remotable pointers (offset-based addressing)        │
+│   - Per-rank message queues in shared memory            │
+│   - Inline small messages (<4KB) optimization           │
+├──────────────────────────────────────────────────────────┤
+│ CONFIGURATION:                                           │
+│   CXL_DAX_PATH: /dev/dax0.0                              │
+│   CXL_DIRECT: (auto for DAX)                             │
+│   CXL_SHIM_VERBOSE: NO                                   │
+│   CXL_SHIM_TRACE: NO                                     │
+│   CXL_DAX_RESET: YES                                     │
+└──────────────────────────────────────────────────────────┘
+
+[32m[CXL_SHIM:node0:861:INFO] === MPI_Init HOOK CALLED (hook #1) ===
+[0m[32m[CXL_SHIM:node0:861:INFO] Mapped DAX device /dev/dax0.0: 262144000 bytes (250 MB) at 0x7cbdbba00000
+[0m[32m[CXL_SHIM:node0:861:INFO] Reset DAX allocation counter
+[0m[32m[CXL_SHIM:node0:861:INFO] Initializing CXL shared memory structures...
+[0m[32m[CXL_SHIM:node0:861:INFO] Mailbox size: 10368 bytes, max mailboxes: 64 (available: 262143936 bytes)
+[0m[32m[CXL_SHIM:node0:861:INFO] Initializing 64 mailboxes...
+[0m
+┌──────────────────────────────────────────────────────────┐
+│    CXL MPI SHIM LIBRARY v3.0 - Remotable Pointer Edition  │
+├──────────────────────────────────────────────────────────┤
+│ Host: node1                                                │
+│ PID:  781                                                  │
+│ Time: 1786130331                                           │
+├──────────────────────────────────────────────────────────┤
+│ FEATURES:                                                │
+│   - CXL Direct Send/Recv via shared DAX device          │
+│   - Remotable pointers (offset-based addressing)        │
+│   - Per-rank message queues in shared memory            │
+│   - Inline small messages (<4KB) optimization           │
+├──────────────────────────────────────────────────────────┤
+│ CONFIGURATION:                                           │
+│   CXL_DAX_PATH: /dev/dax0.0                              │
+│   CXL_DIRECT: (auto for DAX)                             │
+│   CXL_SHIM_VERBOSE: NO                                   │
+│   CXL_SHIM_TRACE: NO                                     │
+│   CXL_DAX_RESET: YES                                     │
+└──────────────────────────────────────────────────────────┘
+
+[32m[CXL_SHIM:node1:781:INFO] === MPI_Init HOOK CALLED (hook #1) ===
+[0m[32m[CXL_SHIM:node1:781:INFO] Mapped DAX device /dev/dax0.0: 262144000 bytes (250 MB) at 0x7b3387e00000
+[0m[32m[CXL_SHIM:node1:781:INFO] Reset DAX allocation counter
+[0m[32m[CXL_SHIM:node1:781:INFO] Initializing CXL shared memory structures...
+[0m[32m[CXL_SHIM:node1:781:INFO] Mailbox size: 10368 bytes, max mailboxes: 64 (available: 262143936 bytes)
+[0m[32m[CXL_SHIM:node1:781:INFO] Initializing 64 mailboxes...
+[0m[32m[CXL_SHIM:node0:861:INFO] CXL shared memory structures initialized (header_size=667648 bytes, 261476352 bytes free for data)
+[0m[32m[CXL_SHIM:node0:861:INFO] CXL memory initialized: type=dax, size=250 MB, base=0x7cbdbba00000, header=0x7cbdbba00000, mailboxes=0x7cbdbba00040
+[0m[32m[CXL_SHIM:node1:781:INFO] CXL shared memory structures initialized (header_size=667648 bytes, 261476352 bytes free for data)
+[0m[32m[CXL_SHIM:node1:781:INFO] CXL memory initialized: type=dax, size=250 MB, base=0x7b3387e00000, header=0x7b3387e00000, mailboxes=0x7b3387e00040
+[0m[32m[CXL_SHIM:node0:861:INFO] Registered rank 0/2 in CXL shared memory (pid=861, host=node0, cxl_comm=enabled)
+[0m[32m[CXL_SHIM:node0:861:INFO] MPI_Init completed: rank=0/2, CXL=initialized, CXL_DIRECT=enabled
+[0m
+# OSU MPI Allgather Latency Test v5.3
+# Size       Avg Latency(us)
+[32m[CXL_SHIM:node1:781:INFO] Registered rank 1/2 in CXL shared memory (pid=781, host=node1, cxl_comm=enabled)
+[0m[32m[CXL_SHIM:node1:781:INFO] MPI_Init completed: rank=1/2, CXL=initialized, CXL_DIRECT=enabled
+2                      77.41
+4                      86.59
+8                      87.25
+16                     92.32
+32                     95.07
+64                    122.66
+128                   184.53
+256                   304.95
+512                   561.95
+1024                 1094.64
+2048                 2181.98
+4096                 4034.05
+[0m[32m[CXL_SHIM:node0:861:INFO] === MPI_Finalize HOOK CALLED ===
+[0m[32m[CXL_SHIM:node0:861:INFO] Deactivated rank 0 in CXL shared memory
+[0m8192                   63.78
+[32m[CXL_SHIM:node1:781:INFO] === MPI_Finalize HOOK CALLED ===
+[0m[32m[CXL_SHIM:node1:781:INFO] Deactivated rank 1 in CXL shared memory
+[0m[32m[CXL_SHIM:node0:861:INFO] Cleaning up CXL memory (used 127188992/262144000 bytes, 48.5%)
+[0m[32m[CXL_SHIM:node1:781:INFO] Cleaning up CXL memory (used 127197184/262144000 bytes, 48.5%)
+[0m[32m[CXL_SHIM:node0:861:INFO] MPI_Finalize completed (total hooks: 1)
+[0m[32m[CXL_SHIM:node0:861:INFO] CXL MPI Shim unloading (total hooks: 1)
+[0m[32m[CXL_SHIM:node1:781:INFO] MPI_Finalize completed (total hooks: 1)
+[0m[32m[CXL_SHIM:node1:781:INFO] CXL MPI Shim unloading (total hooks: 1)
+[0m
