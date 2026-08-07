@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.7.16)  7 AUG 2026 19:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.7.16)  7 AUG 2026 23:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**sc26_ad_ae_ocean.tex
+**sc26_ad_ae_ocean
 (./sc26_ad_ae_ocean.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -294,7 +294,7 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count310
 )
-No file sc26_ad_ae_ocean.aux.
+(./sc26_ad_ae_ocean.aux)
 \openout1 = `sc26_ad_ae_ocean.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
@@ -311,6 +311,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
 LaTeX Font Info:    ... okay on input line 16.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
 LaTeX Font Info:    ... okay on input line 16.
+
 -- Lines per column: 56 (exact).
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -334,48 +335,73 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 36.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 37.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 36.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 1661) in paragraph at lines 49--53
+Underfull \hbox (badness 1661) in paragraph at lines 50--54
 \OT1/ptm/m/n/10 crobench-marks. It is then used to study hard-
  []
 
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 9
-3.
+6.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 99--107
+Underfull \hbox (badness 10000) in paragraph at lines 102--110
 []\OT1/ptm/m/n/10 Figs. 6--9 use the configuration-driven pro-gram
  []
 
 
-Underfull \hbox (badness 7116) in paragraph at lines 99--107
+Underfull \hbox (badness 7116) in paragraph at lines 102--110
 \OT1/pcr/m/n/10 Ocean/script/reproduce_figures_6_9.py\OT1/ptm/m/n/10 . This
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--107
+Underfull \hbox (badness 10000) in paragraph at lines 102--110
 \OT1/pcr/m/n/10 Ocean/artifact/figures_6_9/<run-id>/\OT1/ptm/m/n/10 . The
  []
 
 
-Underfull \hbox (badness 1694) in paragraph at lines 119--122
+Underfull \hbox (badness 10000) in paragraph at lines 111--118
+[]\OT1/ptm/m/n/10 The re-lease also re-tains
+ []
+
+
+Underfull \hbox (badness 1571) in paragraph at lines 111--118
+\OT1/ptm/m/n/10 Figs. 6--9 re-sult bun-dle: the sup-plied snap-shot con-tains
+ []
+
+
+Underfull \hbox (badness 1454) in paragraph at lines 111--118
+\OT1/ptm/m/n/10 server and VM con-sole logs plus pro-vi-sional Fig-ure 5
+ []
+
+
+Underfull \hbox (badness 1817) in paragraph at lines 111--118
+\OT1/ptm/m/n/10 TCP/OSU di-ag-nos-tics, but no com-plete TPC-C, YCSB,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 111--118
+\OT1/ptm/m/n/10 un-der \OT1/pcr/m/n/10 Ocean/artifact/figures_6_9/<run-id>/
+ []
+
+
+Underfull \hbox (badness 1694) in paragraph at lines 130--133
 \OT1/ptm/m/n/10 proves TPC-C NewOrder through-put, and software-
  []
 
 
-Underfull \hbox (badness 2103) in paragraph at lines 134--139
+Underfull \hbox (badness 2103) in paragraph at lines 145--150
 []\OT1/ptm/m/n/10 Tool setup is the longest stage be-cause it com-piles
  []
 
@@ -384,101 +410,86 @@ dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \hbox (badness 1728) in paragraph at lines 160--167
+Underfull \hbox (badness 1728) in paragraph at lines 171--178
  \OT1/ptm/m/it/10 Soft-ware: [] \OT1/ptm/m/n/10 The setup sup-ports na-tive Lin
 ux and uses
  []
 
 
-Underfull \hbox (badness 3417) in paragraph at lines 160--167
+Underfull \hbox (badness 3417) in paragraph at lines 171--178
 \OT1/ptm/m/n/10 KVM/QEMU, NumPy, Mat-plotlib, Open-MPI, LM-bench,
  []
 
 
-Underfull \hbox (badness 1377) in paragraph at lines 160--167
+Underfull \hbox (badness 1377) in paragraph at lines 171--178
 \OT1/ptm/m/n/10 STREAM, and OSU Micro-Benchmarks. Fig-ure 3 ad-di-
  []
 
 
-Underfull \hbox (badness 1412) in paragraph at lines 160--167
+Underfull \hbox (badness 1412) in paragraph at lines 171--178
 \OT1/pcr/m/n/10 cxl_switch_lock_bench_mpi \OT1/ptm/m/n/10 tar-get. Ex-act pack-
 age
  []
 
 
-Underfull \hbox (badness 4366) in paragraph at lines 202--211
+Underfull \hbox (badness 10000) in paragraph at lines 212--214
+[]\OT1/pcr/m/n/10 qemu.img\OT1/ptm/m/n/10 : $https : / / drive . google . com /
+ ^^Lle / d /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 212--214
+\OT1/ptm/m/n/10 19yLZPEI5HN23noVx2m3OsYhJVbuvan1y / view ?
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 214--216
+[]\OT1/pcr/m/n/10 bzImage\OT1/ptm/m/n/10 : $https : / / drive . google . com / 
+^^Lle / d /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 214--216
+\OT1/ptm/m/n/10 1hxHVrcPfoO-[]PRbWFhYJEala7UVL7hJoy / view ?
+ []
+
+
+Underfull \hbox (badness 4366) in paragraph at lines 223--235
 \OT1/ptm/m/n/10 The first com-mand is sep-a-rated be-cause pack-age in-
  []
 
 
-Underfull \hbox (badness 4660) in paragraph at lines 202--211
+Underfull \hbox (badness 4660) in paragraph at lines 223--235
 \OT1/ptm/m/n/10 stal-la-tion re-quires \OT1/pcr/m/n/10 sudo\OT1/ptm/m/n/10 . Th
 e de-fault setup ini-tial-izes
  []
 
-[2]
-Underfull \hbox (badness 7116) in paragraph at lines 306--313
-[]\OT1/ptm/m/n/10 Use a ded-i-cated Linux/KVM server and com-plete
+
+Underfull \hbox (badness 6428) in paragraph at lines 223--235
+\OT1/ptm/m/n/10 CXL/gem5, down-loads the Sim-CXL ker-nel and disk
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 306--313
-\OT1/pcr/m/n/10 artifacts/setup-tools.sh\OT1/ptm/m/n/10 . The script ini-tial-i
-zes
+Underfull \hbox (badness 2556) in paragraph at lines 223--235
+\OT1/ptm/m/n/10 im-age, runs \OT1/pcr/m/n/10 tools/OCEAN/script/setup_host.sh
  []
 
 
-Underfull \hbox (badness 4752) in paragraph at lines 306--313
-\OT1/ptm/m/n/10 OCEAN and Sim-CXL and their de-pen-den-cies, builds
+Underfull \hbox (badness 5274) in paragraph at lines 223--235
+\OT1/ptm/m/n/10 to build OCEAN's QEMU fork and host de-pen-den-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 333--341
-[]\OT1/ptm/m/n/10 For Fig. 4, the wrap-per caps the ex-per-i-ment
+Underfull \hbox (badness 1910) in paragraph at lines 223--235
+\OT1/ptm/m/n/10 tract in-stalls the guest re-sources from the links above
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 333--341
-\OT1/ptm/m/n/10 at six hosts by de-fault. It cre-ates the OCEAN
+Underfull \hbox (badness 1484) in paragraph at lines 223--235
+\OT1/pcr/m/n/10 artifacts/tools/OCEAN/build/bzImage\OT1/ptm/m/n/10 ; the ex-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 333--341
-\OT1/ptm/m/n/10 guests, copies the MPI STREAM work-load from
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 333--341
-\OT1/pcr/m/n/10 artifacts/tools/OCEAN/workloads/stream
- []
-
-[3]
-Underfull \hbox (badness 2435) in paragraph at lines 419--424
-[]\OT1/ptm/m/n/10 This eval-u-a-tion re-quires two phys-i-cal hosts map-ping
- []
-
-
-Underfull \hbox (badness 4967) in paragraph at lines 419--424
-\OT1/ptm/m/n/10 the same CXL Type-3 DAX range through a CXL
- []
-
-
-Underfull \hbox (badness 2990) in paragraph at lines 419--424
-\OT1/ptm/m/n/10 switch, MPI, cache-flush in-struc-tions, and the op-tional
- []
-
-
-Underfull \hbox (badness 4713) in paragraph at lines 437--443
-\OT1/ptm/m/n/10 Col-lec-tion is fail-closed: \OT1/pcr/m/n/10 acknowledge_dax_wr
-ites
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 455--462
-[]\OT1/ptm/m/n/10 A suc-cess-ful run pro-duces \OT1/pcr/m/n/10 fig9_samples.csv
-\OT1/ptm/m/n/10 ,
- []
-
+[2] [3]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -497,13 +508,13 @@ L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4654 strings out of 469438
- 71949 string characters out of 5468410
- 493708 words of memory out of 5000000
- 33262 multiletter control sequences out of 15000+600000
+ 4657 strings out of 469438
+ 72024 string characters out of 5468410
+ 494699 words of memory out of 5000000
+ 33263 multiletter control sequences out of 15000+600000
  662930 words of font info for 112 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 57i,9n,66p,233b,322s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,9n,66p,229b,283s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
@@ -514,7 +525,7 @@ nts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type
 ourier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on sc26_ad_ae_ocean.pdf (4 pages, 140160 bytes).
+Output written on sc26_ad_ae_ocean.pdf (4 pages, 141953 bytes).
 PDF statistics:
  73 PDF objects out of 1000 (max. 8388607)
  44 compressed objects within 1 object stream

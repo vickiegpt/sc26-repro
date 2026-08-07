@@ -33,8 +33,8 @@ FORCE_BUILD=0
 GDOWN=""
 
 # --- OCEAN Resource Configuration ---
-OCEAN_KERNEL_URL="https://asplos.dev/about/bzImage"
-OCEAN_DISK_GDOWN="1ga5CN3_H1qfReer99w_QcVOYb6R21JHI"
+OCEAN_KERNEL_GDOWN="https://drive.google.com/file/d/1hxHVrcPfoO-PRbWFhYJEala7UVL7hJoy/view?usp=drive_link"
+OCEAN_DISK_GDOWN="https://drive.google.com/file/d/19yLZPEI5HN23noVx2m3OsYhJVbuvan1y/view?usp=drive_link"
 
 has_stage() { [[ " ${STAGES} " == *" $1 "* ]]; }
 
@@ -302,24 +302,17 @@ stage_ocean() {
         return
     fi
 
-    log "Fetching OCEAN kernel via wget"
-    if [[ -z "${OCEAN_KERNEL_URL}" ]]; then
-        die "OCEAN_KERNEL_URL is not set. Aborting."
+    log "Fetching OCEAN guest kernel and disk image via gdown"
+    if [[ -z "${OCEAN_KERNEL_GDOWN}" ]]; then
+        die "OCEAN_KERNEL_GDOWN is not set. Aborting."
     fi
-    wget -q --show-progress -c -O "${ocean_build_dir}/bzImage" "${OCEAN_KERNEL_URL}" || die "Failed to download OCEAN kernel."
-
-    log "Fetching OCEAN disk image via gdown"
     if [[ -z "${OCEAN_DISK_GDOWN}" ]]; then
         die "OCEAN_DISK_GDOWN is not set. Aborting."
     fi
     ensure_gdown
-    
-    # Adjust --id or --folder based on the format of your GDOWN link
-    if [[ "${OCEAN_DISK_GDOWN}" == http* ]]; then
-         "${GDOWN}" "${OCEAN_DISK_GDOWN}" -O "${ocean_build_dir}/qemu.img" || die "Failed to download OCEAN disk image."
-    else
-         "${GDOWN}" --id "${OCEAN_DISK_GDOWN}" -O "${ocean_build_dir}/qemu.img" || die "Failed to download OCEAN disk image."
-    fi
+
+    "${GDOWN}" --fuzzy "${OCEAN_KERNEL_GDOWN}" -O "${ocean_build_dir}/bzImage" || die "Failed to download OCEAN kernel."
+    "${GDOWN}" --fuzzy "${OCEAN_DISK_GDOWN}" -O "${ocean_build_dir}/qemu.img" || die "Failed to download OCEAN disk image."
 
     ok "OCEAN setup complete. Check ${ocean_build_dir} for downloaded files."
 }
@@ -335,4 +328,3 @@ for stage in ${ALL_STAGES}; do
 done
 
 log "Done."
-

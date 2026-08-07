@@ -14,6 +14,7 @@
 \AtBeginEnvironment{verbatim}{\footnotesize}
 
 \begin{document}
+\raggedbottom
 
 \twocolumn[%
 {\begin{center}
@@ -57,7 +58,9 @@ policies with GROMACS, and calibration of the inter-host LogP timing model.
 \begin{description}
 \item[$A_1$] The top-level artifact harness, OCEAN source and modified QEMU,
 guest kernel and disk image, LMbench, MPI STREAM, OSU Micro-Benchmarks, the
-MPI CXL shim, and the experiment and plotting scripts for Figs.~3--5.
+MPI CXL shim, and the experiment and plotting scripts for Figs.~3--5.  The
+release archive is identified by DOI
+\url{https://doi.org/10.5281/zenodo.21844690}.
 
 \item[$A_2$] SimCXL/gem5 source, its downloaded kernel and disk image, the
 ASIC and FPGA timing profiles, and the SimCXL portion of the Figure~3 runner.
@@ -104,6 +107,14 @@ writes each successful run to
 Figs.~3--5 have self-contained VM runners, whereas Figs.~6--9 require
 site-specific application commands and, for Fig.~9, a physical shared-CXL
 platform.
+
+The release also retains \texttt{artifacts/figures\_6\_9\_live/} as
+bring-up evidence.  Despite its historical name, that directory is not a
+validated Figs.~6--9 result bundle: the supplied snapshot contains server and
+VM console logs plus provisional Figure~5 TCP/OSU diagnostics, but no complete
+TPC-C, YCSB, GROMACS, or LogP tables.  Reviewers must use only a validated
+\texttt{normalized/} subdirectory from a successful run under
+\texttt{Ocean/artifact/figures\_6\_9/<run-id>/} as plotting input.
 
 \artexp
 
@@ -193,6 +204,16 @@ artifacts/fig3/ ... artifacts/fig5/
 Ocean/script/reproduce_figures_6_9.py
 run-experiments.sh
 \end{verbatim}
+The complete release archive is identified by
+\url{https://doi.org/10.5281/zenodo.21844690}.  The source and small artifact
+files are packaged in that archive; the large OCEAN guest resources are
+downloaded separately.  The canonical resource links are:
+\begin{itemize}
+  \item \texttt{qemu.img}:
+  \url{https://drive.google.com/file/d/19yLZPEI5HN23noVx2m3OsYhJVbuvan1y/view?usp=drive_link};
+  \item \texttt{bzImage}:
+  \url{https://drive.google.com/file/d/1hxHVrcPfoO-PRbWFhYJEala7UVL7hJoy/view?usp=drive_link}.
+\end{itemize}
 Install system dependencies on a dedicated machine, then perform the common
 setup:
 \begin{verbatim}
@@ -203,11 +224,14 @@ The first command is separated because package installation requires
 \texttt{sudo}.  The default setup initializes the required OCEAN and SimCXL
 sources, builds SimCXL/gem5, downloads the SimCXL kernel and disk image, runs
 \texttt{tools/OCEAN/script/setup\_host.sh} to build OCEAN's QEMU fork and host
-dependencies, compiles the OCEAN server, and downloads OCEAN's guest kernel
-and image.  The experiment wrappers consume the downloaded resource paths;
-reviewers do not need to edit launcher scripts manually.  Because setup and
-experiment scripts install packages, create bridge/TAP interfaces, and launch
-KVM guests, they should run only on a dedicated evaluation host.
+dependencies, and compiles the OCEAN server.  The artifact contract installs
+the guest resources from the links above as
+\texttt{artifacts/tools/OCEAN/build/qemu.img} and
+\texttt{artifacts/tools/OCEAN/build/bzImage}; the experiment wrappers consume
+those paths without manual launcher edits.  Record a SHA-256 checksum for
+each downloaded file in the result manifest.  Because setup and experiment
+scripts install packages, create bridge/TAP interfaces, and launch KVM guests,
+they should run only on a dedicated evaluation host.
 
 \artcomp
 
@@ -263,8 +287,9 @@ DAX authorization is absent.
 
 This evaluation checks that the artifact is complete before spending time on
 VMs or gem5.  Plotting requires Python~3 and Matplotlib but does not require
-KVM, root privileges, Tigon, GROMACS, or physical CXL hardware.  Install the
-Python requirements, then replot all supplied Figures~3--5 data:
+KVM, root privileges, Tigon, GROMACS, or physical CXL hardware.  Obtain the
+artifact from the persistent DOI listed in the AD, install the Python
+requirements, then replot all supplied Figures~3--5 data:
 \begin{verbatim}
 python3 -m pip install -r requirements.txt
 ./run-experiments.sh --replot
@@ -289,6 +314,9 @@ python3 script/reproduce_figures_6_9.py doctor \
  --fig all \
  --config script/figures_6_9/config.example.toml
 \end{verbatim}
+Do not pass \path{artifacts/figures_6_9_live/} to the plotting command.
+It documents attempted VM/TCP bring-up and is intentionally outside the
+normalized result contract.
 
 \artout
 
@@ -303,13 +331,27 @@ None of these checks alone proves a fresh performance result.
 
 \artin
 
-Use a dedicated Linux/KVM server and complete
-\texttt{artifacts/setup-tools.sh}.  The script initializes OCEAN and SimCXL
-and their dependencies, builds OCEAN's QEMU fork and SimCXL/gem5, downloads
-the required kernels and disk images, and places those resources where the
-experiment wrappers expect them.  Figure~3 requires one OCEAN VM and separate
-SimCXL simulations.  Figure~4 uses up to six OCEAN VMs.  Figure~5 uses two
-OCEAN VMs with guest-to-guest networking and MPI.
+Use a dedicated Linux/KVM server and run the setup script:
+\begin{verbatim}
+./artifacts/setup-tools.sh
+\end{verbatim}
+The script initializes OCEAN and SimCXL and their dependencies, builds
+OCEAN's QEMU fork and SimCXL/gem5, downloads the required kernels and disk
+images, and places those resources where the experiment wrappers expect them.
+Figure~3 requires one OCEAN VM and separate SimCXL simulations.  Figure~4 uses
+up to six OCEAN VMs.  Figure~5 uses two OCEAN VMs with guest-to-guest
+networking and MPI.
+
+If the automated resource stage cannot access Google Drive, use the canonical
+\texttt{qemu.img} and \texttt{bzImage} download links listed in the AD.  Place
+both files in the OCEAN build directory; then verify that they are nonempty and
+record their hashes:
+\begin{verbatim}
+test -s artifacts/tools/OCEAN/build/qemu.img
+test -s artifacts/tools/OCEAN/build/bzImage
+sha256sum artifacts/tools/OCEAN/build/qemu.img \
+ artifacts/tools/OCEAN/build/bzImage
+\end{verbatim}
 
 \artcomp
 
@@ -331,9 +373,11 @@ SimCXL ASIC and FPGA profiles and parses their LMbench output before producing
 the comparison plot.
 
 For Fig.~4, the wrapper caps the experiment at six hosts by default.  It
-creates the OCEAN guests, copies the MPI STREAM workload from
-\texttt{artifacts/tools/OCEAN/workloads/stream} to the VMs, constructs an MPI
-hostfile containing the active nodes, and runs STREAM through
+creates the OCEAN guests and copies this MPI STREAM workload to the VMs:
+\begin{verbatim}
+artifacts/tools/OCEAN/workloads/stream
+\end{verbatim}
+It constructs a hostfile containing the active nodes and runs STREAM through
 \texttt{libmpi\_cxl\_shim.so}.  The shim allows OCEAN to intercept the MPI
 memory operations.  The runner accepts an explicit host list for smaller
 runs; an evaluator with sufficient resources may deliberately request more
@@ -360,8 +404,8 @@ experiment, not silently replaced with archived data.
 
 \artin
 
-Copy \texttt{config.example.toml} to a new configuration file.  Figures~6 and
-7 require a working Tigon checkout and its database image.  Figure~8 requires
+Create a working configuration from the supplied template.  Figures~6 and 7
+require a working Tigon checkout and its database image.  Figure~8 requires
 the PEPSIN input, GROMACS, and an executable runner for every SHM/TCP and
 placement-policy combination.  Configure two distinct OCEAN VMs with working
 peer networking.  Before collection, run:
@@ -408,9 +452,9 @@ HCC coverage.  Fig.~7 should expose the different sensitivity of the three
 protocols to write-heavy mixes.  Fig.~8 should contain all thirteen policy
 labels for both backends and a nonzero execution-time measurement for every
 point.  Cross-machine numerical differences are acceptable, but incomplete
-sweeps are not.
+sweeps are not.  The provisional files under
+\path{artifacts/figures_6_9_live/} do not satisfy these pass criteria.
 
-\balance
 \arteval{4}
 \noindent\textbf{LogP calibration (Fig.~9 and Table~II).}
 
@@ -418,7 +462,7 @@ sweeps are not.
 
 This evaluation requires two physical hosts mapping the same CXL Type-3 DAX
 range through a CXL switch, MPI, cache-flush instructions, and the optional
-\texttt{cxl\_switch\_lock\_bench\_mpi} benchmark.  Record the host, CPU,
+MPI lock benchmark.  Record the host, CPU,
 CXL device, switch, firmware, DAX range, CPU affinity, and clock source.  Do
 not run this step against a mounted, allocated, or otherwise in-use DAX range.
 
@@ -435,11 +479,14 @@ Ocean/build/microbench/cxl_switch_lock_bench_mpi \
  --self-test --iterations 32
 \end{verbatim}
 Then set the exact DAX character device, hostfile, iteration count, map offset,
-and map size in \texttt{figures\_6\_9.toml}.  Collection is fail-closed:
-\texttt{acknowledge\_dax\_writes} must be set to true and the configured
-command must contain \texttt{--acknowledge-dax-write}.  The supplied example
-limits the writable mapping to a page-aligned 2~MiB range.  After verifying
-that range is safe, run:
+and map size in the working configuration.  Collection is fail-closed: enable
+DAX write acknowledgement and include the matching command-line flag:
+\begin{verbatim}
+acknowledge_dax_writes = true
+--acknowledge-dax-write
+\end{verbatim}
+The supplied example limits the writable mapping to a page-aligned 2~MiB
+range.  After verifying that range is safe, run:
 \begin{verbatim}
 python3 Ocean/script/reproduce_figures_6_9.py \
  all --fig 9 --config figures_6_9.toml
@@ -452,9 +499,14 @@ the plotter.
 
 \artout
 
-A successful run produces \texttt{fig9\_samples.csv},
-\texttt{fig9\_params.csv}, and \texttt{fig9\_contention.csv}, plus Fig.~9a--c
-in PDF and PNG and a checksum manifest.  The expected qualitative result is
+A successful run produces these normalized tables:
+\begin{verbatim}
+fig9_samples.csv
+fig9_params.csv
+fig9_contention.csv
+\end{verbatim}
+It also produces Fig.~9a--c in PDF and PNG and a checksum manifest.  The
+expected qualitative result is
 that the calibrated decomposition and contention curve follow measured
 hardware more closely than the default OCEAN parameters.  Missing MPI ranks,
 phases, samples, DAX authorization, or an unsafe device configuration must
